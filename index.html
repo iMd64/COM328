@@ -1323,30 +1323,9 @@
         <button class="btn" id="encap-btn-4" onclick="stepEncap(4)" disabled style="text-align:left">4. Add Frame (L2)</button>
         <button class="btn" id="encap-reset" onclick="resetEncap()" style="display:none;background:rgba(16,185,129,0.1);border-color:#10b981;color:#10b981;text-align:center">↺ Reset</button>
       </div>
-      <div id="encap-visual" style="background:#0a0e1a;border:1px solid #1e2d45;border-radius:8px;padding:1.5rem;min-height:180px;display:flex;align-items:center;justify-content:center">
+      <div id="encap-visual" style="background:#0a0e1a;border:1px solid #1e2d45;border-radius:8px;padding:1.5rem;min-height:180px;display:flex;align-items:center;justify-content:center;width:100%">
         <div id="encap-placeholder" style="color:#475569;font-size:0.85rem;text-align:center">Awaiting application data...</div>
-        <div id="encap-frame" class="encap-layer" style="display:none;width:100%">
-          <div style="background:rgba(139,92,246,0.15);border:2px solid #8b5cf6;border-radius:6px;padding:0.5rem">
-            <div style="font-size:0.65rem;color:#8b5cf6;font-family:'JetBrains Mono',monospace;margin-bottom:0.4rem">L2: FRAME</div>
-            <div style="display:flex;gap:0.5rem;align-items:stretch">
-              <div style="background:rgba(139,92,246,0.3);padding:0.5rem;border-radius:4px;font-size:0.72rem;font-weight:700;color:#a78bfa;flex-shrink:0">MAC Hdr</div>
-              <div id="encap-packet" class="encap-layer" style="display:none;flex:1;background:rgba(14,165,233,0.15);border:2px solid #0ea5e9;border-radius:5px;padding:0.5rem">
-                <div style="font-size:0.65rem;color:#0ea5e9;font-family:'JetBrains Mono',monospace;margin-bottom:0.4rem">L3: PACKET</div>
-                <div style="display:flex;gap:0.4rem;align-items:stretch">
-                  <div style="background:rgba(14,165,233,0.3);padding:0.5rem;border-radius:3px;font-size:0.72rem;font-weight:700;color:#38bdf8;flex-shrink:0">IP Hdr</div>
-                  <div id="encap-segment" class="encap-layer" style="display:none;flex:1;background:rgba(34,197,94,0.15);border:2px solid #22c55e;border-radius:4px;padding:0.5rem">
-                    <div style="font-size:0.65rem;color:#22c55e;font-family:'JetBrains Mono',monospace;margin-bottom:0.4rem">L4: SEGMENT</div>
-                    <div style="display:flex;gap:0.4rem;align-items:stretch">
-                      <div style="background:rgba(34,197,94,0.3);padding:0.5rem;border-radius:3px;font-size:0.72rem;font-weight:700;color:#86efac;flex-shrink:0">TCP/UDP</div>
-                      <div id="encap-payload" class="encap-layer" style="display:none;flex:1;background:rgba(245,158,11,0.3);border:1px solid #f59e0b;border-radius:3px;padding:0.5rem;text-align:center;font-weight:700;color:#fbbf24;font-size:0.85rem">PAYLOAD DATA</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div style="background:rgba(139,92,246,0.3);padding:0.5rem;border-radius:4px;font-size:0.72rem;font-weight:700;color:#a78bfa;flex-shrink:0">Trailer</div>
-            </div>
-          </div>
-        </div>
+        <div id="encap-render-area" style="width:100%;"></div>
       </div>
     </div>
     <div class="grid-3" style="margin-top:1.5rem">
@@ -2534,37 +2513,69 @@ const encapBtnClasses = ['encap-btn-1','encap-btn-2','encap-btn-3','encap-btn-4'
 
 function stepEncap(step) {
   document.getElementById('encap-placeholder').style.display = 'none';
-  const layerMap = { 1:'encap-payload', 2:'encap-segment', 3:'encap-packet', 4:'encap-frame' };
-  const layer = document.getElementById(layerMap[step]);
-  layer.style.display = step === 4 ? 'block' : 'flex';
-  layer.style.display = step === 1 ? 'flex' : layer.style.display;
-  setTimeout(() => layer.classList.add('show'), 30);
-  
+
+  // We define the HTML for each layer, embedding the previous layers inside them
+  const payload = `<div style="flex:1; background:rgba(245,158,11,0.3); border:1px solid #f59e0b; border-radius:3px; padding:0.5rem; text-align:center; font-weight:700; color:#fbbf24; font-size:0.85rem; display:flex; align-items:center; justify-content:center;">PAYLOAD DATA</div>`;
+
+  const segment = `<div style="flex:1; background:rgba(34,197,94,0.15); border:2px solid #22c55e; border-radius:4px; padding:0.5rem; animation: fadeIn 0.3s ease;">
+    <div style="font-size:0.65rem; color:#22c55e; font-family:'JetBrains Mono',monospace; margin-bottom:0.4rem;">L4: SEGMENT</div>
+    <div style="display:flex; gap:0.4rem; align-items:stretch;">
+      <div style="background:rgba(34,197,94,0.3); padding:0.5rem; border-radius:3px; font-size:0.72rem; font-weight:700; color:#86efac; flex-shrink:0; display:flex; align-items:center;">TCP/UDP</div>
+      ${payload}
+    </div>
+  </div>`;
+
+  const packet = `<div style="flex:1; background:rgba(14,165,233,0.15); border:2px solid #0ea5e9; border-radius:5px; padding:0.5rem; animation: fadeIn 0.3s ease;">
+    <div style="font-size:0.65rem; color:#0ea5e9; font-family:'JetBrains Mono',monospace; margin-bottom:0.4rem;">L3: PACKET</div>
+    <div style="display:flex; gap:0.4rem; align-items:stretch;">
+      <div style="background:rgba(14,165,233,0.3); padding:0.5rem; border-radius:3px; font-size:0.72rem; font-weight:700; color:#38bdf8; flex-shrink:0; display:flex; align-items:center;">IP Hdr</div>
+      ${segment}
+    </div>
+  </div>`;
+
+  const frame = `<div style="width:100%; background:rgba(139,92,246,0.15); border:2px solid #8b5cf6; border-radius:6px; padding:0.5rem; animation: fadeIn 0.3s ease;">
+    <div style="font-size:0.65rem; color:#8b5cf6; font-family:'JetBrains Mono',monospace; margin-bottom:0.4rem;">L2: FRAME</div>
+    <div style="display:flex; gap:0.5rem; align-items:stretch;">
+      <div style="background:rgba(139,92,246,0.3); padding:0.5rem; border-radius:4px; font-size:0.72rem; font-weight:700; color:#a78bfa; flex-shrink:0; display:flex; align-items:center;">MAC Hdr</div>
+      ${packet}
+      <div style="background:rgba(139,92,246,0.3); padding:0.5rem; border-radius:4px; font-size:0.72rem; font-weight:700; color:#a78bfa; flex-shrink:0; display:flex; align-items:center;">Trailer</div>
+    </div>
+  </div>`;
+
+  const renderArea = document.getElementById('encap-render-area');
+
+  // Inject the correct combination based on the button clicked
+  if (step === 1) renderArea.innerHTML = payload;
+  if (step === 2) renderArea.innerHTML = segment;
+  if (step === 3) renderArea.innerHTML = packet;
+  if (step === 4) {
+    renderArea.innerHTML = frame;
+    document.getElementById('encap-reset').style.display = 'block';
+  }
+
+  // Update button states
   const btn = document.getElementById(`encap-btn-${step}`);
   btn.className = 'btn done';
   btn.disabled = true;
   
   if (step < 4) {
     document.getElementById(`encap-btn-${step+1}`).disabled = false;
-  } else {
-    document.getElementById('encap-reset').style.display = 'block';
   }
+  
   encapStep = step;
 }
 
 function resetEncap() {
-  ['encap-payload','encap-segment','encap-packet','encap-frame'].forEach(id => {
-    const el = document.getElementById(id);
-    el.classList.remove('show');
-    setTimeout(() => el.style.display = 'none', 300);
-  });
+  document.getElementById('encap-render-area').innerHTML = '';
   document.getElementById('encap-placeholder').style.display = 'block';
   document.getElementById('encap-reset').style.display = 'none';
+  
+  const labels = ['1. Create Payload (L7)','2. Add TCP Header (L4)','3. Add IP Header (L3)','4. Add Frame (L2)'];
+  
   for (let i = 1; i <= 4; i++) {
     const btn = document.getElementById(`encap-btn-${i}`);
     btn.className = 'btn';
     btn.disabled = i !== 1;
-    const labels = ['1. Create Payload (L7)','2. Add TCP Header (L4)','3. Add IP Header (L3)','4. Add Frame (L2)'];
     btn.textContent = labels[i-1];
   }
   encapStep = 0;
