@@ -473,7 +473,7 @@ option { background: var(--surface); }
 /* ── PDF DRAWER ── */
 #pdf-drawer {
   position: fixed;
-  top: 56px; right: 0; bottom: 0;
+  top: 0px; right: 0; bottom: 0;
   width: 620px;
   max-width: 90vw;
   background: var(--surface);
@@ -486,15 +486,16 @@ option { background: var(--surface); }
   box-shadow: -8px 0 40px rgba(0,0,0,0.5);
 }
 #pdf-drawer.open { transform: translateX(0); }
-#pdf-drawer-header {
+/*#pdf-drawer-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0.85rem 1.25rem;
+  padding-top: 0cm;
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
   gap: 1rem;
-}
+}*/
 #pdf-drawer-title {
   font-family: 'Syne', sans-serif;
   font-weight: 700;
@@ -636,7 +637,7 @@ body.audio-visible #main-content { padding-bottom: 80px; }
 #pdf-drawer.maximized {
   width: 85vw !important; /* 85% of the screen width */
   height: 85vh !important; /* 85% of the screen height */
-  top: 50% !important;
+  top: 44% !important;
   left: 50% !important;
   transform: translate(-50%, -50%) !important; /* Centers it perfectly */
   border-radius: 12px !important;
