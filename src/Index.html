@@ -1,0 +1,3070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Networking Fundamentals — Complete Study Guide</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="styles/style.css">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!--<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e2d45;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --text: #e2e8f0;
+    --text-muted: #64748b;
+    --week-colors: #00d4ff, #7c3aed, #10b981, #f59e0b, #ef4444, #ec4899;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+  
+  /* TOP NAVIGATION */
+  #top-nav {
+    background: rgba(10,14,26,0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    height: 56px;
+    flex-shrink: 0;
+    z-index: 100;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  #top-nav::-webkit-scrollbar { display: none; }
+  
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--accent);
+    white-space: nowrap;
+    margin-right: 2rem;
+    letter-spacing: -0.02em;
+  }
+  .logo span { color: var(--text-muted); font-weight: 400; }
+
+  .week-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 1.25rem;
+    height: 56px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    position: relative;
+  }
+  .week-tab:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+  .week-tab.active { color: var(--text); border-bottom-color: var(--tab-color, var(--accent)); }
+  .week-tab .week-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--tab-color, var(--accent));
+    opacity: 0.6;
+  }
+  .week-tab.active .week-dot { opacity: 1; }
+
+  /* MAIN LAYOUT */
+  #app { display: flex; flex: 1; overflow: hidden; }
+
+  /* SIDEBAR */
+  #sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 1rem 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .sidebar-section { margin-bottom: 0.25rem; }
+  .sidebar-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    padding: 0.5rem 1.25rem 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .sidebar-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.78rem;
+    padding: 0.5rem 1.25rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+  .sidebar-item:hover { color: var(--text); background: var(--surface2); }
+  .sidebar-item.active { color: var(--text); background: var(--surface2); border-left-color: var(--tab-color, var(--accent)); font-weight: 500; }
+
+  /* MAIN CONTENT */
+  #main-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2.5rem 3rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  @media (max-width: 768px) {
+    #sidebar { display: none; }
+    #main-content { padding: 1.5rem; }
+  }
+
+  /* WEEK PAGES */
+  .week-page { display: none; }
+  .week-page.active { display: block; }
+
+  /* SECTION PAGES */
+  .section-page { display: none; }
+  .section-page.active { display: block; animation: fadeUp 0.3s ease; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* COMPONENTS */
+  .section-badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    background: rgba(0,212,255,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(0,212,255,0.2);
+  }
+  h2.section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 0.5rem;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .section-subtitle {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    max-width: 600px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: #2d3f5c; }
+  .card-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  @media (max-width: 900px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+
+  .chart-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    position: relative;
+  }
+  .chart-inner { position: relative; height: 300px; width: 100%; }
+
+  /* OSI LAYER COLORS */
+  .l7 { background: linear-gradient(135deg, #ef4444, #dc2626); }
+  .l6 { background: linear-gradient(135deg, #f97316, #ea580c); }
+  .l5 { background: linear-gradient(135deg, #eab308, #d97706); }
+  .l4 { background: linear-gradient(135deg, #22c55e, #16a34a); }
+  .l3 { background: linear-gradient(135deg, #0ea5e9, #0284c7); }
+  .l2 { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+  .l1 { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+
+  .osi-stack-item {
+    cursor: pointer;
+    padding: 0.85rem 1.25rem;
+    border-radius: 6px;
+    color: white;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+    margin-bottom: 0.35rem;
+    font-family: 'Syne', sans-serif;
+  }
+  .osi-stack-item:hover { transform: translateX(6px); filter: brightness(1.1); }
+  .osi-stack-item.selected { transform: translateX(10px); box-shadow: -3px 0 0 white; }
+
+  .osi-detail-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* CUSTOM SCROLLBAR */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #2d3f5c; }
+
+  /* CALLOUT */
+  .callout {
+    background: rgba(0,212,255,0.06);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin: 1rem 0;
+  }
+  .callout strong { color: var(--accent); }
+  .callout.warn { background: rgba(245,158,11,0.06); border-color: rgba(245,158,11,0.3); border-left-color: #f59e0b; }
+  .callout.warn strong { color: #f59e0b; }
+  .callout.green { background: rgba(16,185,129,0.06); border-color: rgba(16,185,129,0.3); border-left-color: var(--accent3); }
+  .callout.green strong { color: var(--accent3); }
+
+  /* TABLE */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  .data-table th { background: var(--surface2); color: #94a3b8; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.6rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+  .data-table td { padding: 0.7rem 1rem; border-bottom: 1px solid rgba(30,45,69,0.5); vertical-align: top; }
+  .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* INTERACTIVE BUTTON */
+  .btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.15s;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.active-btn { background: rgba(0,212,255,0.1); border-color: var(--accent); color: var(--accent); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn.done { background: rgba(16,185,129,0.1); border-color: var(--accent3); color: var(--accent3); cursor: default; }
+
+  /* NEW CONCEPT TAG */
+  .new-tag {
+    display: inline-block;
+    background: rgba(236,72,153,0.15);
+    color: #ec4899;
+    border: 1px solid rgba(236,72,153,0.3);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-left: 0.4rem;
+    vertical-align: middle;
+  }
+
+  /* PILL */
+  .pill {
+    display: inline-block;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 0.15rem 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: #94a3b8;
+  }
+
+  /* FIBER LAYERS */
+  .fiber-ring {
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+  }
+  .fiber-ring:hover { filter: brightness(1.15); }
+
+  /* HANDSHAKE STEP */
+  .hs-step { opacity: 0; transition: opacity 0.5s ease; }
+  .hs-step.show { opacity: 1; }
+
+  /* ENCAP LAYERS */
+  .encap-layer { transition: all 0.5s ease; opacity: 0; transform: scale(0.95); }
+  .encap-layer.show { opacity: 1; transform: scale(1); }
+
+  /* WEEK OVERVIEW CARDS */
+  .week-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .week-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .week-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: var(--w-color, var(--accent));
+  }
+  .week-card:hover { border-color: #2d3f5c; transform: translateY(-2px); }
+  .week-card h3 { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.35rem; }
+  .week-card p { font-size: 0.8rem; color: #64748b; line-height: 1.5; }
+  .week-number { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--w-color, var(--accent)); margin-bottom: 0.5rem; }
+
+  /* SIGNAL PROPAGATION */
+  .prop-btn { padding: 0.4rem 1rem; cursor: pointer; border-radius: 4px; font-size: 0.8rem; font-family: 'Syne', sans-serif; font-weight: 600; border: 1px solid var(--border); background: var(--surface2); color: var(--text-muted); transition: all 0.2s; }
+  .prop-btn.active { background: rgba(0,212,255,0.1); border-color: var(--accent); color: var(--accent); }
+
+  /* TOPOLOGY VISUAL */
+  .topo-node { width: 36px; height: 36px; border-radius: 50%; background: var(--surface2); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; position: absolute; }
+
+  /* SUBNET CALC */
+  select, input[type="text"], input[type="number"] {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.82rem;
+    font-family: 'JetBrains Mono', monospace;
+    outline: none;
+  }
+  select:focus, input:focus { border-color: var(--accent); }
+  option { background: var(--surface); }
+
+  /* ── AUDIO PLAYER BAR ── */
+  #audio-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 64px;
+    background: rgba(10,14,26,0.97);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0 1.5rem;
+    z-index: 200;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 0 -4px 24px rgba(0,0,0,0.4);
+  }
+  #audio-bar.visible { transform: translateY(0); }
+
+  #audio-week-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    white-space: nowrap;
+    min-width: 80px;
+  }
+  #audio-track-name {
+    font-size: 0.78rem;
+    color: var(--text);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+  }
+  .audio-info { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+
+  #audio-play-btn {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    color: #000;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    font-size: 0.9rem;
+  }
+  #audio-play-btn:hover { background: #33ddff; transform: scale(1.07); }
+
+  .audio-progress-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+  }
+  #audio-progress {
+    flex: 1;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--surface2);
+    border-radius: 99px;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    padding: 0;
+  }
+  #audio-progress::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+  #audio-progress:hover::-webkit-slider-thumb { transform: scale(1.3); }
+  #audio-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    min-width: 80px;
+    text-align: right;
+  }
+
+  /* waveform canvas */
+  #audio-waveform {
+    width: 80px; height: 32px;
+    border-radius: 4px;
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+
+  .audio-upload-label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.8rem;
+    background: var(--surface2);
+    border: 1px dashed var(--border);
+    border-radius: 4px;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .audio-upload-label:hover { border-color: var(--accent); color: var(--accent); }
+  #audio-file-input { display: none; }
+
+  #audio-volume {
+    width: 70px;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--surface2);
+    border-radius: 99px;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    padding: 0;
+    flex-shrink: 0;
+  }
+  #audio-volume::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    cursor: pointer;
+  }
+
+  /* ── PDF DRAWER ── */
+  #pdf-drawer {
+    position: fixed;
+    top: 56px; right: 0; bottom: 0;
+    width: 620px;
+    max-width: 90vw;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    z-index: 150;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: -8px 0 40px rgba(0,0,0,0.5);
+  }
+  #pdf-drawer.open { transform: translateX(0); }
+
+  #pdf-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    gap: 1rem;
+  }
+  #pdf-drawer-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+  #pdf-week-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+    background: rgba(0,212,255,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(0,212,255,0.2);
+  }
+  #pdf-close-btn {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+  #pdf-close-btn:hover { background: var(--border); color: var(--text); }
+
+  #pdf-upload-zone {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 2rem;
+    text-align: center;
+  }
+  .pdf-drop-area {
+    width: 100%;
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    padding: 3rem 2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .pdf-drop-area:hover, .pdf-drop-area.dragover {
+    border-color: var(--accent);
+    background: rgba(0,212,255,0.03);
+  }
+  .pdf-drop-icon { font-size: 2.5rem; opacity: 0.5; }
+  .pdf-drop-text { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+  .pdf-drop-text strong { color: var(--accent); }
+  #pdf-file-input { display: none; }
+
+  #pdf-viewer-area {
+    flex: 1;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #pdf-viewer-area.active { display: flex; }
+
+  #pdf-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+  .pdf-tool-btn {
+    padding: 0.28rem 0.7rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    cursor: pointer;
+    transition: all 0.12s;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .pdf-tool-btn:hover { border-color: var(--accent); color: var(--accent); }
+  #pdf-page-info {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin: 0 0.25rem;
+  }
+  #pdf-frame {
+    flex: 1;
+    border: none;
+    background: #fff;
+    width: 100%;
+  }
+
+  /* PDF open button in sidebar */
+  .sidebar-pdf-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: calc(100% - 2.5rem);
+    margin: 0.5rem 1.25rem 0.25rem;
+    padding: 0.45rem 0.75rem;
+    background: rgba(0,212,255,0.05);
+    border: 1px dashed rgba(0,212,255,0.25);
+    border-radius: 4px;
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-family: 'JetBrains Mono', monospace;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .sidebar-pdf-btn:hover { background: rgba(0,212,255,0.1); border-style: solid; }
+
+  /* Overlay when PDF drawer is open */
+  #pdf-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 140;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  #pdf-overlay.active { opacity: 1; pointer-events: all; }
+
+  /* Push main content up when audio bar is visible */
+  body.audio-visible #main-content { padding-bottom: 80px; }
+
+</style>-->
+</head>
+<body>
+
+<!-- AUDIO PLAYER BAR -->
+<div id="audio-bar">
+  <div class="audio-info">
+    <div id="audio-week-label">W1 — Audio</div>
+    <div id="audio-track-name">No file loaded</div>
+  </div>
+  <button id="audio-play-btn" onclick="togglePlay()" title="Play/Pause">▶</button>
+  <div class="audio-progress-wrap">
+    <input type="range" id="audio-progress" min="0" max="100" value="0" step="0.1" oninput="seekAudio(this.value)">
+  </div>
+  <span id="audio-time">0:00 / 0:00</span>
+  <canvas id="audio-waveform" width="80" height="32"></canvas>
+  <span style="font-size:1rem;opacity:0.5;flex-shrink:0">🔊</span>
+  <input type="range" id="audio-volume" min="0" max="1" step="0.05" value="1" oninput="setVolume(this.value)" title="Volume">
+</div>
+
+<!-- PDF DRAWER OVERLAY -->
+<div id="pdf-overlay" onclick="closePDF()"></div>
+
+<!-- PDF DRAWER -->
+<div id="pdf-drawer">
+  <!--<div id="pdf-drawer-header">
+    <div>
+      <div id="pdf-week-badge">Week 1</div>
+      <div id="pdf-drawer-title">Study Notes</div>
+    </div>
+    
+    <button id="pdf-close-btn" onclick="closePDF()" title="Close">✕</button>
+  </div>-->
+  <!-- Upload state -->
+  <div id="pdf-upload-zone">
+    <div class="pdf-drop-area" id="pdf-drop-area" onclick="document.getElementById('pdf-file-input').click()">
+      <div class="pdf-drop-icon">📄</div>
+      <div class="pdf-drop-text">
+        <strong>Click to load a PDF</strong><br>
+        Drop your study notes PDF here for this week.<br>
+        <span style="font-size:0.78rem;opacity:0.6">Supports standard PDF files</span>
+      </div>
+    </div>
+  </div>
+  <!-- Viewer state -->
+  <div id="pdf-viewer-area">
+    <div id="pdf-toolbar">
+      <span id="pdf-page-info"></span>
+      <button class="pdf-tool-btn" id="pdf-size-btn" onclick="togglePDFSize()">⛶ Enlarge</button>
+      <button class="pdf-tool-btn" style="margin-left:auto" onclick="pdfZoomOut()">− Zoom</button>
+      <button class="pdf-tool-btn" onclick="pdfZoomIn()">+ Zoom</button>
+      <button class="pdf-tool-btn" onclick="pdfFit()">Fit</button>
+      <button class="pdf-tool-btn" onclick="document.getElementById('pdf-file-input').click()">⬆ Replace</button>
+      <button id="pdf-close-btn" onclick="closePDF()" title="Close">✕</button>
+    </div>
+    <iframe id="pdf-frame" title="PDF Viewer"></iframe>
+  </div>
+</div>
+
+<!-- TOP NAV -->
+<nav id="top-nav">
+  <div class="logo">NET<span>GUIDE</span></div>
+  <button class="week-tab active" style="--tab-color:#00d4ff" data-week="home" onclick="showWeek('home')">
+    <span class="week-dot"></span> Overview
+  </button>
+  <button class="week-tab" style="--tab-color:#00d4ff" data-week="w1" onclick="showWeek('w1')">
+    <span class="week-dot"></span> W1 — Intro
+  </button>
+  <button class="week-tab" style="--tab-color:#7c3aed" data-week="w2" onclick="showWeek('w2')">
+    <span class="week-dot"></span> W2 — Addressing
+  </button>
+  <button class="week-tab" style="--tab-color:#10b981" data-week="w3" onclick="showWeek('w3')">
+    <span class="week-dot"></span> W3 — Transport
+  </button>
+  <button class="week-tab" style="--tab-color:#f59e0b" data-week="w4" onclick="showWeek('w4')">
+    <span class="week-dot"></span> W4 — Infrastructure
+  </button>
+  <button class="week-tab" style="--tab-color:#ef4444" data-week="w5" onclick="showWeek('w5')">
+    <span class="week-dot"></span> W5 — Cabling
+  </button>
+  <button class="week-tab" style="--tab-color:#ec4899" data-week="w6" onclick="showWeek('w6')">
+    <span class="week-dot"></span> W6 — Wireless
+  </button>
+</nav>
+
+<div id="app">
+
+<!-- SIDEBAR -->
+<aside id="sidebar" id="sidebar-nav"></aside>
+
+<!-- MAIN CONTENT -->
+<main id="main-content">
+
+<!-- ============================================================ HOME ============================================================ -->
+<div class="week-page active" id="page-home">
+  <div class="section-badge">Complete Study Guide</div>
+  <h2 class="section-title">Networking Fundamentals</h2>
+  <p class="section-subtitle">Six weeks of networking concepts from OSI layers to wireless security. Click any week below to begin, or use the top navigation to jump directly.</p>
+  <div class="week-overview">
+    <div class="week-card" style="--w-color:#00d4ff" onclick="showWeek('w1')">
+      <div class="week-number">WEEK 01</div>
+      <h3>Introduction to Networking</h3>
+      <p>Network services, OSI model, access models, hardware and scopes (PAN → WAN).</p>
+    </div>
+    <div class="week-card" style="--w-color:#7c3aed" onclick="showWeek('w2')">
+      <div class="week-number">WEEK 02</div>
+      <h3>How Computers Find Each Other</h3>
+      <p>MAC addresses, DNS, DHCP, ports, sockets, IPv4 classes, NAT/PAT, and IPv6.</p>
+    </div>
+    <div class="week-card" style="--w-color:#10b981" onclick="showWeek('w3')">
+      <div class="week-number">WEEK 03</div>
+      <h3>Data Transportation</h3>
+      <p>TCP vs UDP, encapsulation, IP/ICMP/ARP protocols, routing tables and routing algorithms.</p>
+    </div>
+    <div class="week-card" style="--w-color:#f59e0b" onclick="showWeek('w4')">
+      <div class="week-number">WEEK 04</div>
+      <h3>Infrastructure & Hardware</h3>
+      <p>Structured cabling (TIA/EIA), rack systems, NAS/SAN storage, power management, NICs.</p>
+    </div>
+    <div class="week-card" style="--w-color:#ef4444" onclick="showWeek('w5')">
+      <div class="week-number">WEEK 05</div>
+      <h3>Cabling & Transmission</h3>
+      <p>Analog vs digital signals, multiplexing, copper twisted-pair, coaxial, and fiber optics.</p>
+    </div>
+    <div class="week-card" style="--w-color:#ec4899" onclick="showWeek('w6')">
+      <div class="week-number">WEEK 06</div>
+      <h3>Wireless Networking</h3>
+      <p>RF signals, antenna types, WLAN architecture, 802.11 standards, CSMA/CA and WPA2 security.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ WEEK 1 ============================================================ -->
+<div class="week-page" id="page-w1">
+  <!-- W1: Services -->
+  <div class="section-page active" id="w1-services">
+    <div class="section-badge" style="background:rgba(0,212,255,0.1);color:#00d4ff;border-color:rgba(0,212,255,0.2)">Week 1 — Foundation</div>
+    <h2 class="section-title">Network Services</h2>
+    <p class="section-subtitle">A network's purpose is to make resources available. These resources—known as network services—include applications and the data they provide.</p>
+    <div class="grid-3" style="margin-bottom:1.5rem">
+      <div class="card">
+        <div style="font-size:1.8rem;margin-bottom:0.5rem">💻</div>
+        <div class="card-title">Client-Server Apps</div>
+        <p style="font-size:0.82rem;color:#94a3b8;line-height:1.6">A client requests data from a server. Examples: Web (HTTP), Email (SMTP/POP3/IMAP4), File Transfer (FTP), Remote Desktop.</p>
+      </div>
+      <div class="card">
+        <div style="font-size:1.8rem;margin-bottom:0.5rem">📁</div>
+        <div class="card-title">File &amp; Print Services</div>
+        <p style="font-size:0.82rem;color:#94a3b8;line-height:1.6">File servers provide shared storage. Print services let multiple users share one printer, reducing hardware costs.</p>
+      </div>
+      <div class="card">
+        <div style="font-size:1.8rem;margin-bottom:0.5rem">📞</div>
+        <div class="card-title">Communication Services</div>
+        <p style="font-size:0.82rem;color:#94a3b8;line-height:1.6"><strong>Convergence</strong> delivers data, voice &amp; video on one network. <strong>UC</strong> centralises management. Voice/video is delay-sensitive but loss-tolerant.</p>
+      </div>
+    </div>
+    <div class="callout">
+      <strong>QoS (Quality of Service)</strong> — Admins configure priority rules so voice/video traffic gets bandwidth first. <strong>Bandwidth</strong> = total data transmission capacity of the network.
+    </div>
+  </div>
+
+  <!-- W1: Access Models -->
+  <div class="section-page" id="w1-access">
+    <div class="section-badge" style="background:rgba(0,212,255,0.1);color:#00d4ff;border-color:rgba(0,212,255,0.2)">Week 1 — Topology</div>
+    <h2 class="section-title">Controlling Network Access</h2>
+    <p class="section-subtitle">Logical topology describes how software controls access. The two primary models are Peer-to-Peer (P2P) and Client-Server.</p>
+    <div class="grid-2" style="margin-bottom:1.5rem">
+      <div class="card" style="border-top:2px solid #f59e0b">
+        <div class="card-title" style="color:#f59e0b">Peer-to-Peer (P2P)</div>
+        <p style="font-size:0.82rem;color:#94a3b8;line-height:1.6;margin-bottom:1rem">No centralized control. Each OS manages its own resources. Computers communicate directly.</p>
+        <div style="display:flex;gap:0.5rem;font-size:0.78rem">
+          <div style="flex:1;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);padding:0.5rem;border-radius:4px;color:#10b981">✓ Simple, cheap, no server needed</div>
+          <div style="flex:1;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);padding:0.5rem;border-radius:4px;color:#ef4444">✗ Not scalable, poor security, local accounts only</div>
+        </div>
+      </div>
+      <div class="card" style="border-top:2px solid #00d4ff">
+        <div class="card-title" style="color:#00d4ff">Client-Server Model</div>
+        <p style="font-size:0.82rem;color:#94a3b8;line-height:1.6;margin-bottom:0.75rem">Access controlled by a centralized directory database via a Network Operating System (NOS) like Windows Server.</p>
+        <div class="callout" style="margin:0 0 0.75rem">
+          <strong>Active Directory (AD)</strong> — centralized database of user accounts &amp; security rules. A <strong>Global Account</strong> lets users log into any network computer.
+        </div>
+        <div style="display:flex;gap:0.5rem;font-size:0.78rem">
+          <div style="flex:1;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);padding:0.5rem;border-radius:4px;color:#10b981">✓ Scalable, centralized security &amp; monitoring</div>
+          <div style="flex:1;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);padding:0.5rem;border-radius:4px;color:#ef4444">✗ Complex setup, expensive hardware</div>
+        </div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <div class="card-title" style="margin-bottom:1rem;font-size:0.85rem;color:#94a3b8">Model Trade-off Comparison</div>
+      <div class="chart-inner"><canvas id="w1AccessChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- W1: OSI Model -->
+  <div class="section-page" id="w1-osi">
+    <div class="section-badge" style="background:rgba(0,212,255,0.1);color:#00d4ff;border-color:rgba(0,212,255,0.2)">Week 1 — Framework</div>
+    <h2 class="section-title">The 7-Layer OSI Model</h2>
+    <p class="section-subtitle">Categorizes how communication happens over a network. Data moves 7→1 on send, 1→7 on receive. <strong>Click a layer</strong> to explore it.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+      <div>
+        <div style="font-size:0.7rem;color:#64748b;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem;text-align:center">Sender →</div>
+        <div class="osi-stack-item l7 selected" onclick="showOSI(7,this)">
+          <span>7 — Application</span><span style="font-size:0.75rem;opacity:0.7;font-weight:400">click →</span>
+        </div>
+        <div class="osi-stack-item l6" onclick="showOSI(6,this)">
+          <span>6 — Presentation</span><span style="font-size:0.75rem;opacity:0.7;font-weight:400">click →</span>
+        </div>
+        <div class="osi-stack-item l5" onclick="showOSI(5,this)">
+          <span>5 — Session</span><span style="font-size:0.75rem;opacity:0.7;font-weight:400">click →</span>
+        </div>
+        <div class="osi-stack-item l4" onclick="showOSI(4,this)">
+          <span>4 — Transport</span><span style="font-size:0.75rem;opacity:0.7;font-weight:400">click →</span>
+        </div>
+        <div class="osi-stack-item l3" onclick="showOSI(3,this)">
+          <span>3 — Network</span><span style="font-size:0.75rem;opacity:0.7;font-weight:400">click →</span>
+        </div>
+        <div class="osi-stack-item l2" onclick="showOSI(2,this)">
+          <span>2 — Data Link</span><span style="font-size:0.75rem;opacity:0.7;font-weight:400">click →</span>
+        </div>
+        <div class="osi-stack-item l1" onclick="showOSI(1,this)">
+          <span>1 — Physical</span><span style="font-size:0.75rem;opacity:0.7;font-weight:400">click →</span>
+        </div>
+        <div style="font-size:0.7rem;color:#64748b;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.1em;margin-top:0.75rem;text-align:center">← Receiver</div>
+      </div>
+      <div class="osi-detail-box" id="osi-detail">
+        <div style="text-align:center">
+          <div style="font-size:3rem;margin-bottom:1rem">🖧</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1.1rem;color:#94a3b8">Select a layer</div>
+          <div style="font-size:0.82rem;color:#475569;margin-top:0.5rem">Discover its PDU, protocols &amp; hardware</div>
+        </div>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:1.5rem">
+      <strong>Encapsulation</strong> — As data moves down (7→1), each layer wraps the data with its own header. Layer 4 adds a port header creating a Segment. Layer 3 adds an IP header creating a Packet. Layer 2 adds MAC header + trailer creating a Frame.
+    </div>
+  </div>
+
+  <!-- W1: Hardware -->
+  <div class="section-page" id="w1-hardware">
+    <div class="section-badge" style="background:rgba(0,212,255,0.1);color:#00d4ff;border-color:rgba(0,212,255,0.2)">Week 1 — Physical</div>
+    <h2 class="section-title">Hardware &amp; Network Scopes</h2>
+    <p class="section-subtitle">Networks are categorized by their geographical footprint, and connected by physical devices.</p>
+    <h3 style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1rem">Network Scopes</h3>
+    <div class="grid-4" style="margin-bottom:2rem">
+      <div class="card" style="border-top:2px solid #8b5cf6">
+        <div style="font-size:1.5rem">📱</div>
+        <div class="card-title" style="color:#8b5cf6;margin-top:0.5rem">PAN</div>
+        <div style="font-size:0.7rem;color:#64748b;margin-bottom:0.5rem">Personal Area Network</div>
+        <p style="font-size:0.8rem;color:#94a3b8">Smallest. Example: phone + Bluetooth headphones.</p>
+      </div>
+      <div class="card" style="border-top:2px solid #00d4ff">
+        <div style="font-size:1.5rem">🏢</div>
+        <div class="card-title" style="color:#00d4ff;margin-top:0.5rem">LAN</div>
+        <div style="font-size:0.7rem;color:#64748b;margin-bottom:0.5rem">Local Area Network</div>
+        <p style="font-size:0.8rem;color:#94a3b8">Contained in a building or single office.</p>
+      </div>
+      <div class="card" style="border-top:2px solid #10b981">
+        <div style="font-size:1.5rem">🏙️</div>
+        <div class="card-title" style="color:#10b981;margin-top:0.5rem">MAN / CAN</div>
+        <div style="font-size:0.7rem;color:#64748b;margin-bottom:0.5rem">Metro / Campus</div>
+        <p style="font-size:0.8rem;color:#94a3b8">Group of connected LANs across a city or campus.</p>
+      </div>
+      <div class="card" style="border-top:2px solid #f59e0b">
+        <div style="font-size:1.5rem">🌍</div>
+        <div class="card-title" style="color:#f59e0b;margin-top:0.5rem">WAN</div>
+        <div style="font-size:0.7rem;color:#64748b;margin-bottom:0.5rem">Wide Area Network</div>
+        <p style="font-size:0.8rem;color:#94a3b8">LANs over a vast area. The Internet is the largest WAN.</p>
+      </div>
+    </div>
+    <h3 style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1rem">Core Network Devices</h3>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-title">NIC <span class="pill" style="margin-left:0.5rem">Layer 1 &amp; 2</span></div>
+        <p style="font-size:0.82rem;color:#94a3b8;line-height:1.6;margin-top:0.5rem">Network Interface Card — the hardware port attaching a device to a network. Has a burned-in MAC address.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Switch <span class="pill" style="margin-left:0.5rem">Layer 2</span></div>
+        <p style="font-size:0.82rem;color:#94a3b8;line-height:1.6;margin-top:0.5rem">Receives data and forwards it <em>only</em> to the intended destination port using MAC addresses. Creates a <strong>Star Topology</strong>.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Router <span class="pill" style="margin-left:0.5rem">Layer 3</span></div>
+        <p style="font-size:0.82rem;color:#94a3b8;line-height:1.6;margin-top:0.5rem">Gateway device managing traffic <em>between</em> different networks. Uses IP addresses to find the best path across the internet.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ WEEK 2 ============================================================ -->
+<div class="week-page" id="page-w2">
+  <!-- W2: Overview -->
+  <div class="section-page active" id="w2-overview">
+    <div class="section-badge" style="background:rgba(124,58,237,0.1);color:#7c3aed;border-color:rgba(124,58,237,0.2)">Week 2 — Layer Map</div>
+    <h2 class="section-title">Addressing by OSI Layer</h2>
+    <p class="section-subtitle">Different layers of the OSI model use different addressing systems. Understanding which address belongs to which layer is critical for troubleshooting.</p>
+    <div class="card" style="overflow:hidden;padding:0;margin-bottom:1.5rem">
+      <table class="data-table">
+        <thead><tr><th>OSI Layer</th><th>Addressing Method</th><th>Example</th><th>Tool to View</th></tr></thead>
+        <tbody>
+          <tr><td style="color:#ef4444;font-weight:600">Application (L7)</td><td><strong>FQDNs / Hostnames</strong></td><td><span class="pill">www.example.com</span></td><td><span class="pill">browser</span></td></tr>
+          <tr><td style="color:#22c55e;font-weight:600">Transport (L4)</td><td><strong>Port Numbers</strong></td><td><span class="pill">Port 80 (HTTP)</span></td><td><span class="pill">netstat</span></td></tr>
+          <tr><td style="color:#0ea5e9;font-weight:600">Network (L3)</td><td><strong>IP Addresses</strong></td><td><span class="pill">192.168.1.1</span></td><td><span class="pill">ipconfig</span></td></tr>
+          <tr><td style="color:#3b82f6;font-weight:600">Data Link (L2)</td><td><strong>MAC Addresses</strong></td><td><span class="pill">1C:AF:F7:00:86:7C</span></td><td><span class="pill">arp -a</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout"><strong>ipconfig</strong> (Windows) or <strong>ifconfig</strong> (Linux/Mac) displays your assigned IPv4, IPv6, subnet mask, and default gateway.</div>
+  </div>
+
+  <!-- W2: MAC -->
+  <div class="section-page" id="w2-mac">
+    <div class="section-badge" style="background:rgba(124,58,237,0.1);color:#7c3aed;border-color:rgba(124,58,237,0.2)">Week 2 — Data Link Layer</div>
+    <h2 class="section-title">MAC Addresses</h2>
+    <p class="section-subtitle">A 48-bit physical hardware address permanently embedded on every NIC. Hover over the address halves below to explore the structure.</p>
+    <div class="card" style="margin-bottom:1.5rem">
+      <div style="font-size:0.8rem;color:#64748b;margin-bottom:1rem;text-align:center">Hover to reveal each half's meaning</div>
+      <div style="display:flex;gap:0.5rem;justify-content:center;align-items:center;font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:700;flex-wrap:wrap">
+        <div style="background:rgba(59,130,246,0.15);border:2px solid #3b82f6;padding:0.75rem 1.5rem;border-radius:6px;cursor:pointer;position:relative;transition:all 0.2s;color:#93c5fd"
+          onmouseover="this.style.background='rgba(59,130,246,0.3)';this.querySelector('.mac-tip').style.opacity='1'"
+          onmouseout="this.style.background='rgba(59,130,246,0.15)';this.querySelector('.mac-tip').style.opacity='0'">
+          1C : AF : F7
+          <div class="mac-tip" style="position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#1a2235;border:1px solid #3b82f6;padding:0.4rem 0.8rem;border-radius:4px;font-size:0.7rem;color:#93c5fd;white-space:nowrap;opacity:0;transition:opacity 0.2s;pointer-events:none;z-index:10">OUI — Manufacturer ID (IEEE assigned)</div>
+        </div>
+        <span style="color:#475569">—</span>
+        <div style="background:rgba(16,185,129,0.15);border:2px solid #10b981;padding:0.75rem 1.5rem;border-radius:6px;cursor:pointer;position:relative;transition:all 0.2s;color:#6ee7b7"
+          onmouseover="this.style.background='rgba(16,185,129,0.3)';this.querySelector('.mac-tip').style.opacity='1'"
+          onmouseout="this.style.background='rgba(16,185,129,0.15)';this.querySelector('.mac-tip').style.opacity='0'">
+          00 : 86 : 7C
+          <div class="mac-tip" style="position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#1a2235;border:1px solid #10b981;padding:0.4rem 0.8rem;border-radius:4px;font-size:0.7rem;color:#6ee7b7;white-space:nowrap;opacity:0;transition:opacity 0.2s;pointer-events:none;z-index:10">Extension ID — Unique device ID (manufacturer assigned)</div>
+        </div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title" style="color:#3b82f6">OUI — First 24 bits</div>
+        <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;line-height:1.6">Organizationally Unique Identifier. Assigned to manufacturers by the IEEE to ensure global uniqueness. You can look up any OUI to find the manufacturer.</p>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:#10b981">Extension ID — Last 24 bits</div>
+        <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;line-height:1.6">Assigned uniquely by the manufacturer to every NIC. Ensures no two network cards on Earth have the same MAC address.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- W2: DNS -->
+  <div class="section-page" id="w2-dns">
+    <div class="section-badge" style="background:rgba(124,58,237,0.1);color:#7c3aed;border-color:rgba(124,58,237,0.2)">Week 2 — Application Layer</div>
+    <h2 class="section-title">DNS — Domain Name System</h2>
+    <p class="section-subtitle">Translates human-readable domain names (www.example.com) into machine-readable IP addresses. An Application layer client-server system.</p>
+    <div class="grid-2" style="margin-bottom:1.5rem">
+      <div class="card">
+        <div class="card-title" style="margin-bottom:1rem">Name Server Hierarchy</div>
+        <div style="display:flex;flex-direction:column;gap:0.5rem">
+          <div style="background:#1a2235;border:1px solid #2d3f5c;padding:0.75rem;border-radius:6px;text-align:center">
+            <div style="font-weight:700;color:#e2e8f0">Root DNS Servers</div>
+            <div style="font-size:0.75rem;color:#64748b;margin-top:0.25rem">13 clusters globally — directs to TLDs</div>
+          </div>
+          <div style="text-align:center;color:#475569">↓</div>
+          <div style="background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.3);padding:0.75rem;border-radius:6px;text-align:center">
+            <div style="font-weight:700;color:#a78bfa">TLD Servers</div>
+            <div style="font-size:0.75rem;color:#7c3aed;margin-top:0.25rem">Handles .com, .org, .edu, etc.</div>
+          </div>
+          <div style="text-align:center;color:#475569">↓</div>
+          <div style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);padding:0.75rem;border-radius:6px;text-align:center">
+            <div style="font-weight:700;color:#00d4ff">Authoritative Servers</div>
+            <div style="font-size:0.75rem;color:#0ea5e9;margin-top:0.25rem">Final authority — returns the actual IP</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1rem">
+        <div class="card">
+          <div class="card-title" style="color:#7c3aed">🔄 Recursive Query</div>
+          <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;line-height:1.6">Client demands a <strong>final answer</strong>. The contacted server does ALL the hunting (contacts Root, TLD, Authoritative) on the client's behalf.</p>
+        </div>
+        <div class="card">
+          <div class="card-title" style="color:#10b981">⇄ Iterative Query</div>
+          <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;line-height:1.6">Server returns <strong>referrals</strong> ("try this server") rather than hunting itself. Used between DNS servers.</p>
+        </div>
+        <div class="card">
+          <div class="card-title" style="color:#f59e0b">🔃 Caching-only Server</div>
+          <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;line-height:1.6">Remembers past query results to speed up future requests (respects TTL). No authoritative data of its own.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- W2: DHCP NEW -->
+  <div class="section-page" id="w2-dhcp">
+    <div class="section-badge" style="background:rgba(124,58,237,0.1);color:#7c3aed;border-color:rgba(124,58,237,0.2)">Week 2 — Auto Configuration <span class="new-tag">Added</span></div>
+    <h2 class="section-title">DHCP &amp; Subnet Masks</h2>
+    <p class="section-subtitle">DHCP automates IP address assignment. Subnet masks define which part of an IP is the network vs. the host.</p>
+    <div class="grid-2" style="margin-bottom:1.5rem">
+      <div class="card" style="border-left:3px solid #7c3aed">
+        <div class="card-title">DHCP — Dynamic Host Configuration Protocol</div>
+        <p style="font-size:0.82rem;color:#94a3b8;line-height:1.6;margin-top:0.5rem">Automatically assigns IP addresses to devices on a network. The <strong>DORA process</strong>:</p>
+        <div style="margin-top:1rem;display:flex;flex-direction:column;gap:0.35rem">
+          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.8rem">
+            <span style="background:rgba(124,58,237,0.2);border:1px solid #7c3aed;color:#a78bfa;font-family:'JetBrains Mono',monospace;padding:0.15rem 0.5rem;border-radius:3px;flex-shrink:0">D</span>
+            <span style="color:#94a3b8"><strong style="color:#e2e8f0">Discover</strong> — Client broadcasts "Is there a DHCP server?"</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.8rem">
+            <span style="background:rgba(124,58,237,0.2);border:1px solid #7c3aed;color:#a78bfa;font-family:'JetBrains Mono',monospace;padding:0.15rem 0.5rem;border-radius:3px;flex-shrink:0">O</span>
+            <span style="color:#94a3b8"><strong style="color:#e2e8f0">Offer</strong> — Server responds with an available IP address</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.8rem">
+            <span style="background:rgba(124,58,237,0.2);border:1px solid #7c3aed;color:#a78bfa;font-family:'JetBrains Mono',monospace;padding:0.15rem 0.5rem;border-radius:3px;flex-shrink:0">R</span>
+            <span style="color:#94a3b8"><strong style="color:#e2e8f0">Request</strong> — Client formally requests the offered IP</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.8rem">
+            <span style="background:rgba(124,58,237,0.2);border:1px solid #7c3aed;color:#a78bfa;font-family:'JetBrains Mono',monospace;padding:0.15rem 0.5rem;border-radius:3px;flex-shrink:0">A</span>
+            <span style="color:#94a3b8"><strong style="color:#e2e8f0">Acknowledge</strong> — Server confirms &amp; assigns the IP (with a lease time)</span>
+          </div>
+        </div>
+        <div class="callout warn" style="margin-top:1rem"><strong>DHCP failure</strong> → APIPA assigns 169.254.x.x — local only, no internet access.</div>
+      </div>
+      <div class="card" style="border-left:3px solid #00d4ff">
+        <div class="card-title">Subnet Masks &amp; Private IP Ranges</div>
+        <p style="font-size:0.82rem;color:#94a3b8;line-height:1.6;margin-top:0.5rem">A subnet mask tells a device which part of an IP address is the <strong>network</strong> vs the <strong>host</strong>.</p>
+        <div style="margin-top:1rem;overflow:hidden;border-radius:6px;border:1px solid var(--border)">
+          <table class="data-table" style="margin:0">
+            <thead><tr><th>Class</th><th>Subnet Mask</th><th>Private Range</th></tr></thead>
+            <tbody>
+              <tr><td style="color:#00d4ff">A</td><td><span class="pill">255.0.0.0</span></td><td><span class="pill">10.0.0.0 – 10.255.255.255</span></td></tr>
+              <tr><td style="color:#7c3aed">B</td><td><span class="pill">255.255.0.0</span></td><td><span class="pill">172.16.0.0 – 172.31.255.255</span></td></tr>
+              <tr><td style="color:#10b981">C</td><td><span class="pill">255.255.255.0</span></td><td><span class="pill">192.168.0.0 – 192.168.255.255</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout green" style="margin-top:1rem"><strong>Private IPs</strong> are NOT routable on the internet. NAT/PAT must translate them to a public IP before sending traffic outside the LAN.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- W2: Ports -->
+  <div class="section-page" id="w2-ports">
+    <div class="section-badge" style="background:rgba(124,58,237,0.1);color:#7c3aed;border-color:rgba(124,58,237,0.2)">Week 2 — Transport Layer</div>
+    <h2 class="section-title">Ports &amp; Sockets</h2>
+    <p class="section-subtitle">IP addresses identify the machine. Port numbers identify the specific application. Together they form a Socket.</p>
+    <div class="card" style="margin-bottom:1.5rem">
+      <div class="card-title" style="margin-bottom:1rem">Interactive Socket Builder</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+        <div>
+          <label style="font-size:0.78rem;color:#64748b;display:block;margin-bottom:0.35rem">Target IP Address</label>
+          <select id="socketIP" onchange="updateSocket()" style="width:100%">
+            <option value="192.168.1.50">192.168.1.50 (Workstation)</option>
+            <option value="10.43.3.87">10.43.3.87 (Internal Server)</option>
+            <option value="142.250.190.46">142.250.190.46 (Web Server)</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:0.78rem;color:#64748b;display:block;margin-bottom:0.35rem">Application Port</label>
+          <select id="socketPort" onchange="updateSocket()" style="width:100%">
+            <option value="80">Port 80 — HTTP</option>
+            <option value="443">Port 443 — HTTPS</option>
+            <option value="23">Port 23 — Telnet</option>
+            <option value="25">Port 25 — SMTP</option>
+            <option value="22">Port 22 — SSH</option>
+            <option value="21">Port 21 — FTP</option>
+          </select>
+        </div>
+      </div>
+      <div style="background:#0a0e1a;border:1px solid #1e2d45;border-radius:6px;padding:1.5rem;text-align:center">
+        <div style="font-size:0.7rem;color:#475569;margin-bottom:0.5rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.1em">Generated Socket</div>
+        <div id="socketOutput" style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:#00d4ff">192.168.1.50:80</div>
+      </div>
+    </div>
+    <div class="grid-3">
+      <div class="card" style="border-top:2px solid #ef4444">
+        <div class="card-title" style="color:#ef4444">Well-known Ports</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.2rem;color:#e2e8f0;margin:0.5rem 0">0 — 1023</div>
+        <p style="font-size:0.8rem;color:#94a3b8">Standard protocols: HTTP (80), HTTPS (443), FTP (21), SSH (22), SMTP (25), Telnet (23).</p>
+      </div>
+      <div class="card" style="border-top:2px solid #f59e0b">
+        <div class="card-title" style="color:#f59e0b">Registered Ports</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.2rem;color:#e2e8f0;margin:0.5rem 0">1024 — 49151</div>
+        <p style="font-size:0.8rem;color:#94a3b8">Registered by software vendors for specific applications (e.g., MySQL: 3306).</p>
+      </div>
+      <div class="card" style="border-top:2px solid #00d4ff">
+        <div class="card-title" style="color:#00d4ff">Dynamic / Private</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.2rem;color:#e2e8f0;margin:0.5rem 0">49152 — 65535</div>
+        <p style="font-size:0.8rem;color:#94a3b8">Temporarily assigned to client apps for outbound connections.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- W2: IPv4 -->
+  <div class="section-page" id="w2-ipv4">
+    <div class="section-badge" style="background:rgba(124,58,237,0.1);color:#7c3aed;border-color:rgba(124,58,237,0.2)">Week 2 — Network Layer</div>
+    <h2 class="section-title">IPv4 Addressing</h2>
+    <p class="section-subtitle">32-bit addresses written as four decimal octets (0–255). The network class determines the split between network and host portions.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+      <div class="chart-wrap">
+        <div class="card-title" style="font-size:0.82rem;color:#94a3b8;margin-bottom:1rem;text-align:center">Hosts per Class (Log Scale)</div>
+        <div class="chart-inner"><canvas id="w2IPv4Chart"></canvas></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:0.75rem">
+        <div class="card" style="border-left:3px solid #00d4ff">
+          <div class="card-title" style="color:#00d4ff">Class A</div>
+          <p style="font-size:0.8rem;color:#94a3b8">First octet = Network. Remaining 3 = Host. ~16.7M hosts. Range: 1–126.</p>
+        </div>
+        <div class="card" style="border-left:3px solid #7c3aed">
+          <div class="card-title" style="color:#7c3aed">Class B</div>
+          <p style="font-size:0.8rem;color:#94a3b8">First 2 octets = Network. ~65,000 hosts. Range: 128–191.</p>
+        </div>
+        <div class="card" style="border-left:3px solid #10b981">
+          <div class="card-title" style="color:#10b981">Class C</div>
+          <p style="font-size:0.8rem;color:#94a3b8">First 3 octets = Network. 254 hosts. Range: 192–223.</p>
+        </div>
+        <div class="card" style="border:1px dashed var(--border)">
+          <div class="card-title" style="color:#64748b">Class D &amp; E</div>
+          <p style="font-size:0.8rem;color:#64748b">D (224–239) = Multicast. E (240–254) = Reserved for research.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="overflow:hidden;padding:0">
+      <div style="padding:1rem 1.5rem;font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;border-bottom:1px solid var(--border);background:var(--surface2)">Special &amp; Reserved Addresses</div>
+      <table class="data-table">
+        <tbody>
+          <tr><td><span class="pill">255.255.255.255</span></td><td><strong style="color:#ef4444">Broadcast</strong> — Sent to every device on the local network.</td></tr>
+          <tr><td><span class="pill">127.0.0.1</span></td><td><strong style="color:#10b981">Loopback</strong> — "This computer." Used for local testing (ping yourself).</td></tr>
+          <tr><td><span class="pill">169.254.x.x</span></td><td><strong style="color:#f59e0b">APIPA</strong> — Self-assigned when DHCP fails. Local communication only.</td></tr>
+          <tr><td><span class="pill">0.0.0.0</span></td><td><strong style="color:#00d4ff">Default Route</strong> — Used in routing tables as the "catch-all" gateway of last resort.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- W2: NAT/PAT -->
+  <div class="section-page" id="w2-nat">
+    <div class="section-badge" style="background:rgba(124,58,237,0.1);color:#7c3aed;border-color:rgba(124,58,237,0.2)">Week 2 — IP Conservation</div>
+    <h2 class="section-title">NAT &amp; PAT</h2>
+    <p class="section-subtitle">There aren't enough IPv4 addresses for the entire world. Private IPs are used internally and translated to one public IP before accessing the internet.</p>
+    <div class="card" style="background:#0a0e1a;border:1px solid #1e2d45;margin-bottom:1.5rem">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;color:#7c3aed;margin-bottom:1.5rem;text-align:center">PAT Flow Diagram</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;gap:0.5rem">
+          <div style="background:#1a2235;border:1px solid #1e2d45;padding:0.5rem 1rem;border-radius:4px;text-align:center">
+            <div style="font-size:0.7rem;color:#64748b">Computer 1</div>
+            <div style="font-family:'JetBrains Mono',monospace;color:#10b981;font-size:0.85rem">10.1.1.120</div>
+          </div>
+          <div style="background:#1a2235;border:1px solid #1e2d45;padding:0.5rem 1rem;border-radius:4px;text-align:center">
+            <div style="font-size:0.7rem;color:#64748b">Computer 2</div>
+            <div style="font-family:'JetBrains Mono',monospace;color:#10b981;font-size:0.85rem">10.1.1.121</div>
+          </div>
+          <div style="font-size:0.7rem;color:#64748b;text-align:center">Private (not routable)</div>
+        </div>
+        <div style="color:#475569;font-size:1.5rem">→</div>
+        <div style="background:rgba(0,212,255,0.1);border:2px solid rgba(0,212,255,0.3);padding:1rem 1.5rem;border-radius:50%;text-align:center;font-weight:700;color:#00d4ff">
+          <div style="font-size:0.75rem">Router</div>
+          <div style="font-size:0.65rem;color:#64748b;margin-top:0.2rem">Gateway</div>
+        </div>
+        <div style="color:#475569;font-size:1.5rem">→</div>
+        <div style="background:#0a0e1a;border:1px solid #1e2d45;padding:1rem;border-radius:6px">
+          <div style="font-size:0.7rem;color:#64748b;text-align:center;margin-bottom:0.5rem">Public Internet</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.85rem;color:#00d4ff">92.52.44.1:8000</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.85rem;color:#00d4ff;margin-top:0.25rem">92.52.44.1:8001</div>
+          <div style="font-size:0.7rem;color:#64748b;margin-top:0.5rem">Same public IP, different ports</div>
+        </div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">NAT — Network Address Translation</div>
+        <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;line-height:1.6">Substitutes private IPs with a single public IP before sending traffic out. Conserves public IP addresses.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">PAT — Port Address Translation</div>
+        <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;line-height:1.6">Extension of NAT. Assigns a unique TCP port to each ongoing session so returning traffic knows which internal device requested it. Allows many devices to share one public IP.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- W2: IPv6 -->
+  <div class="section-page" id="w2-ipv6">
+    <div class="section-badge" style="background:rgba(124,58,237,0.1);color:#7c3aed;border-color:rgba(124,58,237,0.2)">Week 2 — Next Generation</div>
+    <h2 class="section-title">IPv6 Addressing</h2>
+    <p class="section-subtitle">128-bit addresses written as eight 16-bit hexadecimal blocks, separated by colons. Created to replace IPv4 due to address exhaustion.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+      <div class="chart-wrap">
+        <div style="text-align:center;margin-bottom:0.5rem;font-size:0.82rem;color:#94a3b8">Bit Length: IPv4 vs IPv6</div>
+        <div class="chart-inner"><canvas id="w2IPv6Chart"></canvas></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1rem">
+        <div class="card">
+          <div class="card-title">Shorthand Rules</div>
+          <ol style="font-size:0.82rem;color:#94a3b8;line-height:1.6;padding-left:1.2rem;margin-top:0.5rem">
+            <li style="margin-bottom:0.5rem"><strong style="color:#e2e8f0">Drop leading zeros</strong> — <span class="pill">0B80</span> → <span class="pill">B80</span></li>
+            <li><strong style="color:#e2e8f0">Double colon ::</strong> — Replace ONE contiguous run of zero blocks. Can only be used once per address.</li>
+          </ol>
+          <div style="background:#0a0e1a;border:1px solid #1e2d45;border-radius:4px;padding:0.75rem;margin-top:0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.72rem">
+            <div style="color:#64748b;margin-bottom:0.3rem">Full:</div>
+            <div style="color:#94a3b8">2001:0000:0B80:0000:0000:00D3:9C5A:00CC</div>
+            <div style="color:#64748b;margin:0.5rem 0 0.3rem">Compressed:</div>
+            <div style="color:#10b981">2001:0:B80::D3:9C5A:CC</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Address Types</div>
+          <div style="display:flex;flex-direction:column;gap:0.5rem;margin-top:0.75rem">
+            <div style="display:flex;gap:0.75rem;align-items:start;font-size:0.8rem">
+              <span style="background:rgba(0,212,255,0.15);color:#00d4ff;padding:0.1rem 0.5rem;border-radius:2px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;flex-shrink:0">Unicast</span>
+              <span style="color:#94a3b8">Goes to a single node. Global (routable) or Link-local (local only).</span>
+            </div>
+            <div style="display:flex;gap:0.75rem;align-items:start;font-size:0.8rem">
+              <span style="background:rgba(124,58,237,0.15);color:#a78bfa;padding:0.1rem 0.5rem;border-radius:2px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;flex-shrink:0">Multicast</span>
+              <span style="color:#94a3b8">Delivered to a specific group. Replaces IPv4 Broadcast.</span>
+            </div>
+            <div style="display:flex;gap:0.75rem;align-items:start;font-size:0.8rem">
+              <span style="background:rgba(16,185,129,0.15);color:#10b981;padding:0.1rem 0.5rem;border-radius:2px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;flex-shrink:0">Anycast</span>
+              <span style="color:#94a3b8">Multiple destinations; delivered to the <strong>nearest</strong> only.</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Transition Strategies</div>
+          <div style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;line-height:1.6">
+            <strong style="color:#00d4ff">Dual Stack</strong> — Device runs both IPv4 and IPv6 simultaneously.<br>
+            <strong style="color:#7c3aed">Tunneling</strong> — Encapsulates IPv6 inside IPv4 to traverse older networks (e.g., 6to4, Teredo).
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ WEEK 3 ============================================================ -->
+<div class="week-page" id="page-w3">
+  <!-- W3: Encapsulation -->
+  <div class="section-page active" id="w3-encap">
+    <div class="section-badge" style="background:rgba(16,185,129,0.1);color:#10b981;border-color:rgba(16,185,129,0.2)">Week 3 — Core Concept</div>
+    <h2 class="section-title">Data Encapsulation</h2>
+    <p class="section-subtitle">As data travels down the OSI stack, each layer wraps it with control information. Build the packet step by step below.</p>
+    <div style="display:grid;grid-template-columns:200px 1fr;gap:1.5rem;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:0.5rem">
+        <button class="btn" id="encap-btn-1" onclick="stepEncap(1)" style="text-align:left">1. Create Payload (L7)</button>
+        <button class="btn" id="encap-btn-2" onclick="stepEncap(2)" disabled style="text-align:left">2. Add TCP Header (L4)</button>
+        <button class="btn" id="encap-btn-3" onclick="stepEncap(3)" disabled style="text-align:left">3. Add IP Header (L3)</button>
+        <button class="btn" id="encap-btn-4" onclick="stepEncap(4)" disabled style="text-align:left">4. Add Frame (L2)</button>
+        <button class="btn" id="encap-reset" onclick="resetEncap()" style="display:none;background:rgba(16,185,129,0.1);border-color:#10b981;color:#10b981;text-align:center">↺ Reset</button>
+      </div>
+      <div id="encap-visual" style="background:#0a0e1a;border:1px solid #1e2d45;border-radius:8px;padding:1.5rem;min-height:180px;display:flex;align-items:center;justify-content:center">
+        <div id="encap-placeholder" style="color:#475569;font-size:0.85rem;text-align:center">Awaiting application data...</div>
+        <div id="encap-frame" class="encap-layer" style="display:none;width:100%">
+          <div style="background:rgba(139,92,246,0.15);border:2px solid #8b5cf6;border-radius:6px;padding:0.5rem">
+            <div style="font-size:0.65rem;color:#8b5cf6;font-family:'JetBrains Mono',monospace;margin-bottom:0.4rem">L2: FRAME</div>
+            <div style="display:flex;gap:0.5rem;align-items:stretch">
+              <div style="background:rgba(139,92,246,0.3);padding:0.5rem;border-radius:4px;font-size:0.72rem;font-weight:700;color:#a78bfa;flex-shrink:0">MAC Hdr</div>
+              <div id="encap-packet" class="encap-layer" style="display:none;flex:1;background:rgba(14,165,233,0.15);border:2px solid #0ea5e9;border-radius:5px;padding:0.5rem">
+                <div style="font-size:0.65rem;color:#0ea5e9;font-family:'JetBrains Mono',monospace;margin-bottom:0.4rem">L3: PACKET</div>
+                <div style="display:flex;gap:0.4rem;align-items:stretch">
+                  <div style="background:rgba(14,165,233,0.3);padding:0.5rem;border-radius:3px;font-size:0.72rem;font-weight:700;color:#38bdf8;flex-shrink:0">IP Hdr</div>
+                  <div id="encap-segment" class="encap-layer" style="display:none;flex:1;background:rgba(34,197,94,0.15);border:2px solid #22c55e;border-radius:4px;padding:0.5rem">
+                    <div style="font-size:0.65rem;color:#22c55e;font-family:'JetBrains Mono',monospace;margin-bottom:0.4rem">L4: SEGMENT</div>
+                    <div style="display:flex;gap:0.4rem;align-items:stretch">
+                      <div style="background:rgba(34,197,94,0.3);padding:0.5rem;border-radius:3px;font-size:0.72rem;font-weight:700;color:#86efac;flex-shrink:0">TCP/UDP</div>
+                      <div id="encap-payload" class="encap-layer" style="display:none;flex:1;background:rgba(245,158,11,0.3);border:1px solid #f59e0b;border-radius:3px;padding:0.5rem;text-align:center;font-weight:700;color:#fbbf24;font-size:0.85rem">PAYLOAD DATA</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style="background:rgba(139,92,246,0.3);padding:0.5rem;border-radius:4px;font-size:0.72rem;font-weight:700;color:#a78bfa;flex-shrink:0">Trailer</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="grid-3" style="margin-top:1.5rem">
+      <div class="card" style="border-left:3px solid #22c55e"><div class="card-title" style="font-size:0.85rem">Switch (L2)</div><p style="font-size:0.8rem;color:#94a3b8;margin-top:0.3rem">Reads MAC addresses in the Frame to forward traffic locally.</p></div>
+      <div class="card" style="border-left:3px solid #0ea5e9"><div class="card-title" style="font-size:0.85rem">Router (L3)</div><p style="font-size:0.8rem;color:#94a3b8;margin-top:0.3rem">Reads IP addresses in the Packet to route across networks.</p></div>
+      <div class="card" style="border-left:3px solid #f59e0b"><div class="card-title" style="font-size:0.85rem">Firewall (L4+)</div><p style="font-size:0.8rem;color:#94a3b8;margin-top:0.3rem">Inspects port numbers and payload to allow/block traffic.</p></div>
+    </div>
+  </div>
+
+  <!-- W3: TCP/UDP -->
+  <div class="section-page" id="w3-transport">
+    <div class="section-badge" style="background:rgba(16,185,129,0.1);color:#10b981;border-color:rgba(16,185,129,0.2)">Week 3 — Layer 4</div>
+    <h2 class="section-title">TCP vs. UDP</h2>
+    <p class="section-subtitle">The Transport layer chooses how data is delivered — absolute reliability (TCP) or raw speed (UDP).</p>
+    <div class="grid-2" style="margin-bottom:1.5rem">
+      <div class="card" style="border-top:3px solid #3b82f6">
+        <div class="card-title" style="color:#3b82f6">TCP — Transmission Control Protocol</div>
+        <div style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);display:inline-block;padding:0.2rem 0.6rem;border-radius:3px;font-size:0.75rem;color:#60a5fa;margin:0.5rem 0">Connection-Oriented &amp; Reliable</div>
+        <ul style="font-size:0.82rem;color:#94a3b8;line-height:1.8;padding-left:1.2rem;margin-top:0.5rem">
+          <li><strong style="color:#e2e8f0">3-Way Handshake:</strong> SYN → SYN/ACK → ACK before any data</li>
+          <li><strong style="color:#e2e8f0">Sequencing:</strong> Numbers segments for ordered reassembly</li>
+          <li><strong style="color:#e2e8f0">Checksums:</strong> Verifies data integrity</li>
+          <li><strong style="color:#e2e8f0">Flow Control:</strong> Prevents overwhelming receiver</li>
+          <li><strong style="color:#e2e8f0">Use:</strong> Web, email, file transfer — anything needing guaranteed delivery</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:3px solid #f59e0b">
+        <div class="card-title" style="color:#f59e0b">UDP — User Datagram Protocol</div>
+        <div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);display:inline-block;padding:0.2rem 0.6rem;border-radius:3px;font-size:0.75rem;color:#fbbf24;margin:0.5rem 0">Connectionless &amp; Fast</div>
+        <ul style="font-size:0.82rem;color:#94a3b8;line-height:1.8;padding-left:1.2rem;margin-top:0.5rem">
+          <li><strong style="color:#e2e8f0">No handshake:</strong> Just fires data immediately</li>
+          <li><strong style="color:#e2e8f0">No guarantees:</strong> No error checking, sequencing, or ACKs</li>
+          <li><strong style="color:#e2e8f0">Low overhead:</strong> Only 4 fields in the header</li>
+          <li><strong style="color:#e2e8f0">Use:</strong> Streaming, VoIP, gaming — speed over reliability</li>
+        </ul>
+      </div>
+    </div>
+    <!-- TCP Handshake interactive -->
+    <div class="card" style="background:#0a0e1a;border:1px solid #1e2d45">
+      <div class="card-title" style="color:#10b981;margin-bottom:0.5rem">TCP Three-Way Handshake</div>
+      <p style="font-size:0.8rem;color:#64748b;margin-bottom:1.5rem">TCP establishes a reliable connection BEFORE sending payload data.</p>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1.5rem">
+        <div style="text-align:center;width:80px">
+          <div style="width:48px;height:48px;background:#1a2235;border:2px solid #1e2d45;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.5rem;font-size:1.2rem">💻</div>
+          <div style="font-size:0.75rem;color:#0ea5e9;font-weight:600">Client</div>
+        </div>
+        <div style="flex:1;position:relative;height:80px">
+          <div class="hs-step" id="hs1" style="position:absolute;top:5px;width:100%;display:flex;align-items:center;justify-content:center">
+            <div style="background:rgba(59,130,246,0.15);border:1px solid #3b82f6;color:#60a5fa;padding:0.2rem 0.75rem;border-radius:20px;font-size:0.78rem;font-weight:600;position:relative;z-index:1">1. SYN →</div>
+          </div>
+          <div class="hs-step" id="hs2" style="position:absolute;top:30px;width:100%;display:flex;align-items:center;justify-content:center">
+            <div style="background:rgba(245,158,11,0.15);border:1px solid #f59e0b;color:#fbbf24;padding:0.2rem 0.75rem;border-radius:20px;font-size:0.78rem;font-weight:600;position:relative;z-index:1">← 2. SYN/ACK</div>
+          </div>
+          <div class="hs-step" id="hs3" style="position:absolute;top:55px;width:100%;display:flex;align-items:center;justify-content:center">
+            <div style="background:rgba(16,185,129,0.15);border:1px solid #10b981;color:#34d399;padding:0.2rem 0.75rem;border-radius:20px;font-size:0.78rem;font-weight:600;position:relative;z-index:1">3. ACK →</div>
+          </div>
+        </div>
+        <div style="text-align:center;width:80px">
+          <div style="width:48px;height:48px;background:#1a2235;border:2px solid #1e2d45;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.5rem;font-size:1.2rem">🖥️</div>
+          <div style="font-size:0.75rem;color:#0ea5e9;font-weight:600">Server</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:0.75rem;justify-content:center">
+        <button class="btn" id="hs-btn" onclick="stepHandshake()">Start Handshake</button>
+        <button class="btn" id="hs-reset" onclick="resetHandshake()" style="display:none">↺ Reset</button>
+      </div>
+      <div id="hs-status" style="text-align:center;font-size:0.8rem;color:#10b981;margin-top:0.75rem;min-height:20px;font-family:'JetBrains Mono',monospace"></div>
+    </div>
+  </div>
+
+  <!-- W3: Protocols -->
+  <div class="section-page" id="w3-protocols">
+    <div class="section-badge" style="background:rgba(16,185,129,0.1);color:#10b981;border-color:rgba(16,185,129,0.2)">Week 3 — Layers 2 &amp; 3</div>
+    <h2 class="section-title">Network &amp; Data Link Protocols</h2>
+    <p class="section-subtitle">These protocols handle mapping, routing, error reporting, and address resolution across local and global networks.</p>
+    <div class="grid-2" style="margin-bottom:1.5rem">
+      <div class="card" style="border-left:3px solid #0ea5e9">
+        <div style="display:flex;justify-content:space-between;align-items:start">
+          <div class="card-title">IP — Internet Protocol</div><span class="pill">L3</span>
+        </div>
+        <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;line-height:1.6">Specifies how and where data should be delivered. Enables internetworking (traversing multiple LANs via routers).</p>
+        <div class="callout warn" style="margin-top:0.75rem"><strong>Important:</strong> IP is unreliable and connectionless on its own — it relies on TCP for reliability.</div>
+      </div>
+      <div class="card" style="border-left:3px solid #f59e0b">
+        <div style="display:flex;justify-content:space-between;align-items:start">
+          <div class="card-title">ICMP — Internet Control Message Protocol</div><span class="pill">L3</span>
+        </div>
+        <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;line-height:1.6">The network's "reporter." Reports on success/failure of delivery — expired TTL, unreachable destinations, congestion.</p>
+        <div class="callout" style="margin-top:0.75rem"><strong>Key limit:</strong> ICMP only <em>reports</em> errors to the sender. It does NOT correct them.</div>
+      </div>
+      <div class="card" style="border-left:3px solid #8b5cf6">
+        <div style="display:flex;justify-content:space-between;align-items:start">
+          <div class="card-title">IGMP — Internet Group Management Protocol</div><span class="pill">L3</span>
+        </div>
+        <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;line-height:1.6">Manages multicast groups on IPv4 networks. Routers use IGMP to determine which devices want to receive a specific multicast stream (e.g., video broadcast).</p>
+      </div>
+      <div class="card" style="border-left:3px solid #10b981">
+        <div style="display:flex;justify-content:space-between;align-items:start">
+          <div class="card-title">ARP — Address Resolution Protocol</div><span class="pill">L2 / L3</span>
+        </div>
+        <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;line-height:1.6">Discovers the physical MAC address when only an IP is known. Broadcasts "Who has 192.168.1.5?" — that device responds. Results stored in an <strong>ARP Table</strong>.</p>
+        <div class="callout" style="margin-top:0.75rem"><strong>Limitation:</strong> ARP broadcasts cannot cross routers — local network only.</div>
+      </div>
+    </div>
+    <div class="callout" style="background:rgba(16,185,129,0.05);border-left-color:#10b981">
+      <strong>TTL (Time to Live)</strong> — A counter in each IP packet, decremented by 1 at each router hop. When it reaches 0, the packet is discarded and ICMP sends a "TTL Exceeded" message back to the sender. Prevents packets from looping forever.
+    </div>
+  </div>
+
+  <!-- W3: Routing -->
+  <div class="section-page" id="w3-routing">
+    <div class="section-badge" style="background:rgba(16,185,129,0.1);color:#10b981;border-color:rgba(16,185,129,0.2)">Week 3 — Path Finding</div>
+    <h2 class="section-title">Routers &amp; Routing Tables</h2>
+    <p class="section-subtitle">A router's routing table is a database of known networks and the most efficient "next hop" to reach them.</p>
+    <div class="card" style="overflow:hidden;padding:0;margin-bottom:1.5rem">
+      <div style="padding:0.75rem 1.25rem;background:var(--surface2);border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#10b981">$ route -n</div>
+      <table class="data-table">
+        <thead><tr>
+          <th title="Target network or host">Destination</th>
+          <th title="IP of next router (next hop). 0.0.0.0 = directly connected">Gateway</th>
+          <th title="Subnet mask for destination">Genmask</th>
+          <th title="U=Usable, G=Gateway, H=Host">Flags</th>
+          <th title="Route cost — lower is better">Metric</th>
+          <th title="Network interface used">Iface</th>
+        </tr></thead>
+        <tbody>
+          <tr><td><span class="pill">223.37.128.0</span></td><td style="color:#475569">0.0.0.0</td><td>255.255.255.0</td><td>U</td><td style="color:#10b981">0</td><td style="color:#00d4ff">eth0</td></tr>
+          <tr><td><span class="pill">127.0.0.1</span></td><td style="color:#475569">0.0.0.0</td><td>255.0.0.0</td><td>UH</td><td style="color:#10b981">0</td><td style="color:#00d4ff">lo</td></tr>
+          <tr style="background:rgba(245,158,11,0.04)"><td style="color:#f59e0b;font-weight:700">0.0.0.0</td><td style="font-weight:700">223.37.128.1</td><td style="color:#475569">0.0.0.0</td><td>UG</td><td style="color:#10b981">0</td><td style="color:#00d4ff">eth0</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout warn" style="margin-bottom:1.5rem"><strong>Gateway of Last Resort</strong> — The highlighted row (Destination 0.0.0.0) is the default route. Any packet with an unknown destination gets sent here (usually your ISP).</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Static Routing</div>
+        <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;line-height:1.6">Admin manually enters routes. Simple and predictable, but can't adapt to failures automatically.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Dynamic Routing</div>
+        <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;line-height:1.6">Router calculates paths using routing protocols (OSPF, BGP). Automatically reroutes when paths fail.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- W3: Routing Protocols -->
+  <div class="section-page" id="w3-protocols2">
+    <div class="section-badge" style="background:rgba(16,185,129,0.1);color:#10b981;border-color:rgba(16,185,129,0.2)">Week 3 — Algorithms</div>
+    <h2 class="section-title">Routing Protocols</h2>
+    <p class="section-subtitle">Routers use protocols to share topology information and calculate the best path. Judged by convergence speed, overhead, and scalability.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+      <div class="chart-wrap">
+        <div class="card-title" style="font-size:0.82rem;color:#94a3b8;margin-bottom:1rem;text-align:center">Protocol Capabilities (Relative)</div>
+        <div class="chart-inner"><canvas id="w3RoutingChart"></canvas></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:0.75rem">
+        <div class="callout" style="margin:0">
+          <strong>IGP</strong> (Interior Gateway) routes <em>inside</em> one Autonomous System (AS).<br>
+          <strong>EGP</strong> (Exterior Gateway) routes <em>between</em> different ASes.
+        </div>
+        <div class="card" style="overflow:hidden;padding:0">
+          <table class="data-table">
+            <thead><tr><th>Protocol</th><th>Type</th><th>Key Feature</th></tr></thead>
+            <tbody>
+              <tr><td style="color:#e2e8f0;font-weight:600">RIP v2</td><td><span style="color:#94a3b8;font-size:0.75rem">IGP / Distance-Vector</span></td><td style="font-size:0.78rem">Simple; strict 15-hop max limit.</td></tr>
+              <tr><td style="color:#e2e8f0;font-weight:600">OSPF</td><td><span style="color:#94a3b8;font-size:0.75rem">IGP / Link-State</span></td><td style="font-size:0.78rem">No hop limit; fast convergence; more CPU overhead.</td></tr>
+              <tr><td style="color:#e2e8f0;font-weight:600">IS-IS</td><td><span style="color:#94a3b8;font-size:0.75rem">IGP / Link-State</span></td><td style="font-size:0.78rem">Highly scalable; ISP preferred; easy IPv6 support.</td></tr>
+              <tr style="background:rgba(0,212,255,0.04)"><td style="color:#00d4ff;font-weight:700">BGP</td><td><span style="color:#0ea5e9;font-size:0.75rem">EGP / Path-Vector</span></td><td style="font-size:0.78rem;color:#00d4ff">"The Protocol of the Internet." Policy-driven; extremely complex.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="callout"><strong>Path Metrics:</strong> Hop Count · Bandwidth · Latency/Delay · Load · MTU (Max Transmission Unit) · Reliability — algorithms combine these to determine the "lowest cost" path.</div>
+  </div>
+</div>
+
+<!-- ============================================================ WEEK 4 ============================================================ -->
+<div class="week-page" id="page-w4">
+  <!-- W4: Cabling -->
+  <div class="section-page active" id="w4-cabling">
+    <div class="section-badge" style="background:rgba(245,158,11,0.1);color:#f59e0b;border-color:rgba(245,158,11,0.2)">Week 4 — TIA/EIA 568</div>
+    <h2 class="section-title">Structured Cabling</h2>
+    <p class="section-subtitle">The standardized hierarchical method for installing networking media in commercial buildings, based on a star topology.</p>
+    <div class="card" style="margin-bottom:1.5rem">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:1.5rem;text-align:center">The 6 Components — Connection Path</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0">
+        <div style="background:#1a2235;border:1px solid #1e2d45;border-bottom:3px solid #f59e0b;padding:0.75rem 2rem;border-radius:8px 8px 0 0;text-align:center;width:280px">
+          <div style="font-size:1.2rem">🏗️</div>
+          <div style="font-weight:700;font-size:0.9rem">1. Entrance Facility</div>
+          <div style="font-size:0.75rem;color:#64748b">Telecom provider enters building (Demarc)</div>
+        </div>
+        <div style="width:3px;height:20px;background:#f59e0b;opacity:0.6"></div>
+        <div style="background:rgba(245,158,11,0.1);border:2px solid #f59e0b;padding:0.75rem 2rem;border-radius:8px;text-align:center;width:280px">
+          <div style="font-size:1.2rem">🖧</div>
+          <div style="font-weight:700;font-size:0.9rem;color:#f59e0b">2. MDF</div>
+          <div style="font-size:0.75rem;color:#f59e0b">Main Distribution Frame — primary data room</div>
+        </div>
+        <div style="width:3px;height:20px;background:#f59e0b;opacity:0.4;border-left:2px dashed #f59e0b;background:none"></div>
+        <div style="font-size:0.65rem;color:#64748b;font-family:'JetBrains Mono',monospace;text-transform:uppercase;margin-bottom:4px">4. Backbone Wiring (fiber)</div>
+        <div style="display:flex;gap:2rem">
+          <div style="background:#1a2235;border:1px solid #1e2d45;padding:0.6rem 1rem;border-radius:6px;text-align:center;width:140px">
+            <div style="font-weight:700;font-size:0.85rem">3. IDF</div>
+            <div style="font-size:0.7rem;color:#64748b">Floor 1 closet</div>
+          </div>
+          <div style="background:#1a2235;border:1px solid #1e2d45;padding:0.6rem 1rem;border-radius:6px;text-align:center;width:140px">
+            <div style="font-weight:700;font-size:0.85rem">3. IDF</div>
+            <div style="font-size:0.7rem;color:#64748b">Floor 2 closet</div>
+          </div>
+        </div>
+        <div style="font-size:0.65rem;color:#64748b;font-family:'JetBrains Mono',monospace;text-transform:uppercase;margin:8px 0 4px">5. Horizontal Wiring (copper) →</div>
+        <div style="display:flex;gap:2rem">
+          <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);padding:0.6rem 1rem;border-radius:6px;text-align:center;width:140px">
+            <div style="font-size:1rem">💻</div>
+            <div style="font-weight:700;font-size:0.85rem;color:#10b981">6. Work Area</div>
+            <div style="font-size:0.7rem;color:#64748b">End-user desk</div>
+          </div>
+          <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);padding:0.6rem 1rem;border-radius:6px;text-align:center;width:140px">
+            <div style="font-size:1rem">🖨️</div>
+            <div style="font-weight:700;font-size:0.85rem;color:#10b981">6. Work Area</div>
+            <div style="font-size:0.7rem;color:#64748b">End-user printer</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="callout"><strong>Patch Panel</strong> — A passive rack-mounted device in the MDF/IDF that organises horizontal cable connections, making it easy to redirect ports without running new cable.</div>
+  </div>
+
+  <!-- W4: Racks -->
+  <div class="section-page" id="w4-racks">
+    <div class="section-badge" style="background:rgba(245,158,11,0.1);color:#f59e0b;border-color:rgba(245,158,11,0.2)">Week 4 — Physical Layer</div>
+    <h2 class="section-title">Cable Management &amp; Racks</h2>
+    <p class="section-subtitle">Proper installation prevents Layer 1 failures. Equipment rooms use standardized rack systems to optimize space and manage heat.</p>
+    <div class="grid-2" style="margin-bottom:1.5rem">
+      <div class="card">
+        <div class="card-title">Installation Rules</div>
+        <ul style="font-size:0.82rem;color:#94a3b8;line-height:2;list-style:none;padding:0;margin-top:0.75rem">
+          <li><span style="color:#ef4444;margin-right:0.5rem">⚠</span><strong style="color:#e2e8f0">Termination:</strong> No more than 1 inch of exposed cable before a connector</li>
+          <li><span style="color:#ef4444;margin-right:0.5rem">⚠</span><strong style="color:#e2e8f0">Bend Radius:</strong> Never exceed bend limits — impairs or breaks the cable</li>
+          <li><span style="color:#10b981;margin-right:0.5rem">✓</span><strong style="color:#e2e8f0">Slack:</strong> Leave slack loops; cinch loosely with hook-and-loop</li>
+          <li><span style="color:#10b981;margin-right:0.5rem">✓</span><strong style="color:#e2e8f0">EMI Avoidance:</strong> Route away from power lines and motors</li>
+          <li><span style="color:#10b981;margin-right:0.5rem">✓</span><strong style="color:#e2e8f0">Plenum Rating:</strong> Use fire-resistant sheathing in air-handling ceilings/ducts</li>
+        </ul>
+      </div>
+      <div class="card" style="background:#0a0e1a;border:1px solid #1e2d45">
+        <div class="card-title" style="color:#f59e0b;margin-bottom:1rem">Hot/Cold Aisle Airflow</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:0.5rem">
+          <div style="flex:1;background:rgba(14,165,233,0.1);border:1px solid rgba(14,165,233,0.3);border-radius:6px;padding:0.75rem;text-align:center;height:80px;display:flex;flex-direction:column;justify-content:center">
+            <div style="color:#0ea5e9;font-weight:700;font-size:0.8rem">Cold Aisle</div>
+            <div style="color:#38bdf8;font-size:1rem;margin-top:0.25rem">→ →</div>
+            <div style="font-size:0.65rem;color:#0ea5e9;margin-top:0.2rem">Air Intake (front)</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:3px">
+            <div style="width:40px;height:12px;background:#1a2235;border:1px solid #1e2d45;border-radius:2px"></div>
+            <div style="width:40px;height:12px;background:#1a2235;border:1px solid #1e2d45;border-radius:2px"></div>
+            <div style="width:40px;height:12px;background:#1a2235;border:1px solid #1e2d45;border-radius:2px"></div>
+            <div style="font-size:0.6rem;color:#475569;text-align:center;margin-top:2px">Server</div>
+          </div>
+          <div style="flex:1;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:0.75rem;text-align:center;height:80px;display:flex;flex-direction:column;justify-content:center">
+            <div style="color:#ef4444;font-weight:700;font-size:0.8rem">Hot Aisle</div>
+            <div style="color:#f87171;font-size:1rem;margin-top:0.25rem">→ →</div>
+            <div style="font-size:0.65rem;color:#ef4444;margin-top:0.2rem">Air Exhaust (back)</div>
+          </div>
+        </div>
+        <div style="font-size:0.75rem;color:#64748b;margin-top:1rem">Racks: typically <strong style="color:#94a3b8">19 inches wide</strong>, measured in <strong style="color:#94a3b8">Rack Units (RU/U)</strong>. 1U = 1.75 inches.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- W4: Storage -->
+  <div class="section-page" id="w4-storage">
+    <div class="section-badge" style="background:rgba(245,158,11,0.1);color:#f59e0b;border-color:rgba(245,158,11,0.2)">Week 4 — Fault Tolerance</div>
+    <h2 class="section-title">Network Storage Solutions</h2>
+    <p class="section-subtitle">Enterprise networks require massive, scalable, fault-tolerant data storage. NAS and SAN solve this at different scales.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+      <div style="display:flex;flex-direction:column;gap:1rem">
+        <div class="card" style="border-left:3px solid #00d4ff">
+          <div class="card-title">NAS — Network Attached Storage</div>
+          <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;line-height:1.6">Specialized storage appliance with an optimized file system. Connects via the existing LAN.</p>
+          <div style="background:#0a0e1a;border:1px solid #1e2d45;border-radius:4px;padding:0.6rem;margin-top:0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:#64748b">
+            Client → LAN → File Server → NAS
+          </div>
+        </div>
+        <div class="card" style="border-left:3px solid #10b981">
+          <div class="card-title">SAN — Storage Area Network</div>
+          <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;line-height:1.6">Independent network of storage devices using a fiber-optic mesh. Extremely fast enterprise-grade storage.</p>
+          <div style="background:#0a0e1a;border:1px solid #1e2d45;border-radius:4px;padding:0.6rem;margin-top:0.75rem;font-size:0.78rem">
+            <strong style="color:#10b981">Protocols:</strong> <span class="pill">Fibre Channel</span> <span class="pill">iSCSI</span><br>
+            <span style="font-size:0.72rem;color:#64748b;display:block;margin-top:0.3rem">Separate physical fiber network connecting to back-end of file servers</span>
+          </div>
+        </div>
+      </div>
+      <div class="chart-wrap" style="display:flex;flex-direction:column;justify-content:center">
+        <div style="text-align:center;font-size:0.82rem;color:#94a3b8;margin-bottom:1rem">NAS vs SAN Comparison</div>
+        <div class="chart-inner"><canvas id="w4StorageChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- W4: Power -->
+  <div class="section-page" id="w4-power">
+    <div class="section-badge" style="background:rgba(245,158,11,0.1);color:#f59e0b;border-color:rgba(245,158,11,0.2)">Week 4 — Electrical Uptime</div>
+    <h2 class="section-title">Power Management</h2>
+    <p class="section-subtitle">Power fluctuations cause hardware damage and intermittent network failures. Redundancy and conditioning maintain uptime.</p>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+      <div class="chart-wrap">
+        <div style="text-align:center;font-size:0.82rem;color:#94a3b8;margin-bottom:1rem">Wall Power Anomalies vs. Online UPS Output</div>
+        <div class="chart-inner"><canvas id="w4PowerChart"></canvas></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:0.75rem">
+        <div class="card" style="border-top:2px solid #ef4444;padding:0.75rem"><div style="font-weight:700;font-size:0.85rem;color:#ef4444">Surge</div><p style="font-size:0.78rem;color:#94a3b8;margin-top:0.3rem">Momentary voltage spike (lightning strikes).</p></div>
+        <div class="card" style="border-top:2px solid #f59e0b;padding:0.75rem"><div style="font-weight:700;font-size:0.85rem;color:#f59e0b">Noise</div><p style="font-size:0.78rem;color:#94a3b8;margin-top:0.3rem">Rapid fluctuations caused by EMI.</p></div>
+        <div class="card" style="border-top:2px solid #f97316;padding:0.75rem"><div style="font-weight:700;font-size:0.85rem;color:#f97316">Brownout/Sag</div><p style="font-size:0.78rem;color:#94a3b8;margin-top:0.3rem">Voltage drop — equipment behaves erratically.</p></div>
+        <div class="card" style="border-top:2px solid #64748b;padding:0.75rem"><div style="font-weight:700;font-size:0.85rem;color:#94a3b8">Blackout</div><p style="font-size:0.78rem;color:#94a3b8;margin-top:0.3rem">Complete power loss.</p></div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">UPS Types</div>
+        <ul style="font-size:0.82rem;color:#94a3b8;line-height:1.8;padding-left:1.2rem;margin-top:0.5rem">
+          <li><strong style="color:#e2e8f0">Standby UPS</strong> — Monitors line; switches to battery on failure. Brief gap during switchover.</li>
+          <li><strong style="color:#e2e8f0">Online UPS</strong> — Equipment ALWAYS runs from battery; wall power just charges it. Perfectly clean output.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">Generators</div>
+        <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;line-height:1.6">For long-term blackouts (diesel/natural gas). Best practice: pair a generator with an Online UPS. The UPS bridges the gap while the generator spins up (typically 10–30 seconds).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- W4: NICs -->
+  <div class="section-page" id="w4-nics">
+    <div class="section-badge" style="background:rgba(245,158,11,0.1);color:#f59e0b;border-color:rgba(245,158,11,0.2)">Week 4 — Device Interfaces</div>
+    <h2 class="section-title">NICs &amp; Ethernet</h2>
+    <p class="section-subtitle">Every networked device needs a Network Interface Card to connect via Ethernet. NICs operate at two OSI layers simultaneously.</p>
+    <div class="grid-2" style="margin-bottom:1.5rem">
+      <div class="card">
+        <div class="card-title" style="margin-bottom:1rem">NIC — Dual Layer Function</div>
+        <div style="margin-bottom:1rem">
+          <div style="font-weight:700;color:#3b82f6;border-bottom:1px solid var(--border);padding-bottom:0.5rem;margin-bottom:0.5rem">Layer 2: Data Link</div>
+          <ul style="font-size:0.82rem;color:#94a3b8;line-height:1.8;padding-left:1.2rem">
+            <li>Assembles &amp; disassembles data frames</li>
+            <li>Reads and writes physical MAC addresses</li>
+            <li>Determines when the node can transmit</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-weight:700;color:#8b5cf6;border-bottom:1px solid var(--border);padding-bottom:0.5rem;margin-bottom:0.5rem">Layer 1: Physical</div>
+          <ul style="font-size:0.82rem;color:#94a3b8;line-height:1.8;padding-left:1.2rem">
+            <li>Contains the hardware transceiver</li>
+            <li>Transmits/receives raw signal bits (voltage, light, RF)</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="card-title" style="margin-bottom:1rem">Form Factors</div>
+        <div style="display:flex;flex-direction:column;gap:0.75rem">
+          <div class="card" style="padding:0.75rem;display:flex;align-items:center;gap:0.75rem">
+            <div style="font-size:1.5rem">🖥️</div>
+            <div><div style="font-weight:600;font-size:0.85rem">Integrated (Onboard)</div><div style="font-size:0.78rem;color:#64748b">Built into the motherboard. Most common.</div></div>
+          </div>
+          <div class="card" style="padding:0.75rem;display:flex;align-items:center;gap:0.75rem">
+            <div style="font-size:1.5rem">🔌</div>
+            <div><div style="font-weight:600;font-size:0.85rem">Expansion Slot (PCIe)</div><div style="font-size:0.78rem;color:#64748b">Dedicated card; used in servers for multi-port NICs.</div></div>
+          </div>
+          <div class="card" style="padding:0.75rem;display:flex;align-items:center;gap:0.75rem">
+            <div style="font-size:1.5rem">🔗</div>
+            <div><div style="font-weight:600;font-size:0.85rem">Peripheral (USB)</div><div style="font-size:0.78rem;color:#64748b">USB-to-Ethernet or USB Wi-Fi adapter. Plug-and-play.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ WEEK 5 ============================================================ -->
+<div class="week-page" id="page-w5">
+  <!-- W5: Signals -->
+  <div class="section-page active" id="w5-signals">
+    <div class="section-badge" style="background:rgba(239,68,68,0.1);color:#ef4444;border-color:rgba(239,68,68,0.2)">Week 5 — Transmission Basics</div>
+    <h2 class="section-title">Analog vs. Digital Signaling</h2>
+    <p class="section-subtitle">All network data travels as signals. Toggle between signal types to see the fundamental difference in how data is encoded.</p>
+    <div class="card" style="margin-bottom:1.5rem">
+      <div style="display:flex;gap:0.5rem;margin-bottom:1.25rem">
+        <button class="btn active-btn" id="sig-analog-btn" onclick="setSignal('analog')">Analog (Sine Wave)</button>
+        <button class="btn" id="sig-digital-btn" onclick="setSignal('digital')">Digital (Square Wave)</button>
+      </div>
+      <div class="chart-inner"><canvas id="w5SignalChart"></canvas></div>
+    </div>
+    <div class="grid-2" style="margin-bottom:1.5rem">
+      <div class="card" id="analog-info">
+        <div class="card-title">Analog Properties</div>
+        <ul style="font-size:0.82rem;color:#94a3b8;line-height:1.8;padding-left:1.2rem;margin-top:0.5rem">
+          <li><strong style="color:#e2e8f0">Amplitude</strong> — Signal strength (wave height)</li>
+          <li><strong style="color:#e2e8f0">Frequency</strong> — Cycles per second (Hz)</li>
+          <li><strong style="color:#e2e8f0">Wavelength</strong> — Distance between peaks</li>
+          <li><strong style="color:#e2e8f0">Phase</strong> — Position in the cycle relative to a reference</li>
+        </ul>
+        <div class="callout warn" style="margin-top:0.75rem"><strong>Drawback:</strong> Highly susceptible to noise — any voltage variation corrupts the signal.</div>
+      </div>
+      <div class="card" id="digital-info" style="opacity:0.5;transition:opacity 0.3s">
+        <div class="card-title">Digital Properties</div>
+        <ul style="font-size:0.82rem;color:#94a3b8;line-height:1.8;padding-left:1.2rem;margin-top:0.5rem">
+          <li><strong style="color:#e2e8f0">Binary</strong> — Only two valid states: 1 or 0</li>
+          <li><strong style="color:#e2e8f0">State 1</strong> — Positive voltage present</li>
+          <li><strong style="color:#e2e8f0">State 0</strong> — Zero voltage</li>
+        </ul>
+        <div class="callout green" style="margin-top:0.75rem"><strong>Advantage:</strong> Minor signal distortions can be corrected — "is it high or low?" is easy to determine.</div>
+      </div>
+    </div>
+    <div class="callout"><strong>Data Modulation:</strong> A <strong>Modem</strong> (MOdulator/DEModulator) encodes digital data onto an analog carrier wave via <strong>FM</strong> (modifies frequency) or <strong>AM</strong> (modifies amplitude).</div>
+  </div>
+
+  <!-- W5: Multiplexing -->
+  <div class="section-page" id="w5-mux">
+    <div class="section-badge" style="background:rgba(239,68,68,0.1);color:#ef4444;border-color:rgba(239,68,68,0.2)">Week 5 — Sharing the Wire</div>
+    <h2 class="section-title">Transmission &amp; Multiplexing</h2>
+    <p class="section-subtitle">Multiplexing allows multiple signals to share one medium by dividing it into logical subchannels. A Mux combines signals at the source; a Demux separates them at the destination.</p>
+    <div class="grid-2" style="margin-bottom:1.5rem">
+      <div class="card" style="background:#0a0e1a;border-top:2px solid #ef4444">
+        <div class="card-title" style="color:#ef4444">Baseband</div>
+        <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;line-height:1.6">Digital signals use the <strong>entire medium</strong> as a single channel. Exclusive use. Example: standard Ethernet.</p>
+      </div>
+      <div class="card" style="border-top:2px solid #f59e0b">
+        <div class="card-title" style="color:#f59e0b">Broadband</div>
+        <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;line-height:1.6">Multiple transmissions <strong>share</strong> a single physical medium via multiplexing. Example: Cable TV, DSL internet.</p>
+      </div>
+    </div>
+    <h3 style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:1rem">Types of Multiplexing</h3>
+    <div class="grid-2" style="margin-bottom:1.5rem">
+      <div class="card" style="border-left:3px solid #3b82f6">
+        <div class="card-title">TDM — Time Division</div>
+        <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;line-height:1.6">Divides medium into time slots. Each device takes strict, equal turns transmitting.</p>
+      </div>
+      <div class="card" style="border-left:3px solid #8b5cf6">
+        <div class="card-title">Statistical Mux — Smart TDM</div>
+        <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;line-height:1.6">Assigns time slots dynamically based on priority and demand. More efficient than standard TDM.</p>
+      </div>
+      <div class="card" style="border-left:3px solid #f59e0b">
+        <div class="card-title">FDM — Frequency Division</div>
+        <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;line-height:1.6">Assigns unique frequency bands to each subchannel. Signals travel simultaneously (DSL, Cellular).</p>
+      </div>
+      <div class="card" style="border-left:3px solid #10b981">
+        <div class="card-title">WDM — Wavelength Division <span style="background:rgba(16,185,129,0.1);color:#10b981;border:1px solid rgba(16,185,129,0.3);padding:0.1rem 0.4rem;border-radius:2px;font-size:0.65rem;font-family:'JetBrains Mono',monospace">Fiber Only</span></div>
+        <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem;line-height:1.6">Carries multiple light signals simultaneously using different colors (wavelengths) of light over fiber optic cable.</p>
+      </div>
+    </div>
+    <div class="callout"><strong>Throughput</strong> = the actual amount of data transmitted per unit time (payload rate). <strong>Bandwidth</strong> = the physical range of frequencies a medium can transmit (its capacity ceiling). In networking, both are expressed as bit rates (Mbps, Gbps).</div>
+  </div>
+
+  <!-- W5: Copper -->
+  <div class="section-page" id="w5-copper">
+    <div class="section-badge" style="background:rgba(239,68,68,0.1);color:#ef4444;border-color:rgba(239,68,68,0.2)">Week 5 — Physical Layer</div>
+    <h2 class="section-title">Copper Cabling — Twisted Pair</h2>
+    <p class="section-subtitle">The most common network cabling. Wires are twisted together to reduce cross talk (signal bleed between adjacent pairs). Max segment: 100 meters.</p>
+    <div class="callout warn" style="margin-bottom:1.5rem"><strong>Twist Ratio:</strong> More twists per meter = better cross talk resistance, higher cost, but MORE attenuation (signal loss over distance). Engineering trade-off.</div>
+    <div class="grid-2" style="margin-bottom:1.5rem">
+      <div class="card">
+        <div class="card-title" style="color:#00d4ff">UTP — Unshielded Twisted Pair</div>
+        <div style="display:flex;justify-content:center;margin:1rem 0">
+          <div style="width:120px;height:50px;background:rgba(0,212,255,0.1);border:3px solid #00d4ff;border-radius:6px;display:flex;align-items:center;justify-content:around;gap:8px;padding:0 16px">
+            <div style="width:12px;height:12px;border-radius:50%;background:#3b82f6"></div>
+            <div style="width:12px;height:12px;border-radius:50%;background:#f97316"></div>
+            <div style="width:12px;height:12px;border-radius:50%;background:#22c55e"></div>
+          </div>
+        </div>
+        <ul style="font-size:0.82rem;color:#94a3b8;line-height:1.8;padding-left:1.2rem">
+          <li>Wire pairs directly in plastic sheath</li>
+          <li style="color:#10b981">✓ Less expensive, highly flexible</li>
+          <li style="color:#f59e0b">✗ Less resistant to EMI/noise</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:#f59e0b">STP — Shielded Twisted Pair</div>
+        <div style="display:flex;justify-content:center;margin:1rem 0">
+          <div style="width:120px;height:50px;background:rgba(245,158,11,0.1);border:3px solid #f59e0b;border-radius:6px;display:flex;align-items:center;justify-content:around;padding:4px 16px;gap:8px;position:relative">
+            <div style="position:absolute;inset:0;border:2px dashed rgba(245,158,11,0.4);border-radius:4px"></div>
+            <div style="width:12px;height:12px;border-radius:50%;background:#3b82f6;position:relative"></div>
+            <div style="width:12px;height:12px;border-radius:50%;background:#f97316;position:relative"></div>
+            <div style="width:12px;height:12px;border-radius:50%;background:#22c55e;position:relative"></div>
+          </div>
+        </div>
+        <ul style="font-size:0.82rem;color:#94a3b8;line-height:1.8;padding-left:1.2rem">
+          <li>Metallic foil/braid surrounds the pairs</li>
+          <li style="color:#10b981">✓ Excellent EMI resistance</li>
+          <li style="color:#f59e0b">✗ Expensive; requires proper grounding</li>
+        </ul>
+      </div>
+    </div>
+    <h3 style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:1rem">RJ-45 Cable Pinouts</h3>
+    <div class="grid-3">
+      <div class="card"><div class="card-title">Straight-through</div><p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem">Both ends wired identically (T568A–T568A or T568B–T568B). Standard connection: computer to switch.</p></div>
+      <div class="card" style="border-top:2px solid #f59e0b"><div class="card-title">Crossover</div><p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem">Transmit/receive wires reversed on one end. Used for switch-to-switch or computer-to-computer.</p></div>
+      <div class="card" style="border-top:2px solid #10b981"><div class="card-title">Rollover (Console)</div><p style="font-size:0.82rem;color:#94a3b8;margin-top:0.5rem">All wires completely mirrored. Used to connect a PC to a router/switch console port for configuration.</p></div>
+    </div>
+  </div>
+
+  <!-- W5: Coax NEW -->
+  <div class="section-page" id="w5-coax">
+    <div class="section-badge" style="background:rgba(239,68,68,0.1);color:#ef4444;border-color:rgba(239,68,68,0.2)">Week 5 — Coaxial Cable <span class="new-tag">Added</span></div>
+    <h2 class="section-title">Coaxial &amp; Other Copper Media</h2>
+    <p class="section-subtitle">Coaxial cable predates twisted pair in networking but is still widely used in cable TV, broadband internet connections, and some legacy network installations.</p>
+    <div class="grid-2" style="margin-bottom:1.5rem">
+      <div class="card">
+        <div class="card-title">Coaxial Cable Structure</div>
+        <div style="display:flex;justify-content:center;align-items:center;height:100px;margin:1rem 0;position:relative">
+          <div style="width:180px;height:40px;background:#64748b;border-radius:20px;display:flex;align-items:center;justify-content:center;position:relative">
+            <div style="position:absolute;left:8px;right:8px;top:8px;bottom:8px;background:#475569;border-radius:16px;display:flex;align-items:center;justify-content:center">
+              <div style="position:absolute;left:6px;right:6px;top:6px;bottom:6px;background:#1e2d45;border-radius:12px;display:flex;align-items:center;justify-content:center">
+                <div style="width:8px;height:8px;border-radius:50%;background:#f59e0b"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.35rem;font-size:0.78rem">
+          <div style="display:flex;align-items:center;gap:0.5rem"><div style="width:10px;height:10px;border-radius:50%;background:#f59e0b;flex-shrink:0"></div><span style="color:#94a3b8"><strong style="color:#e2e8f0">Core</strong> — Solid copper conductor (carries signal)</span></div>
+          <div style="display:flex;align-items:center;gap:0.5rem"><div style="width:10px;height:10px;border-radius:50%;background:#1e2d45;flex-shrink:0"></div><span style="color:#94a3b8"><strong style="color:#e2e8f0">Dielectric</strong> — Insulating layer separating core from shield</span></div>
+          <div style="display:flex;align-items:center;gap:0.5rem"><div style="width:10px;height:10px;border-radius:50%;background:#475569;flex-shrink:0"></div><span style="color:#94a3b8"><strong style="color:#e2e8f0">Braided Shield</strong> — Metal mesh protecting against EMI</span></div>
+          <div style="display:flex;align-items:center;gap:0.5rem"><div style="width:10px;height:10px;border-radius:50%;background:#64748b;flex-shrink:0"></div><span style="color:#94a3b8"><strong style="color:#e2e8f0">Outer Jacket</strong> — PVC protective sheath</span></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:0.75rem">
+        <div class="card" style="border-left:3px solid #f59e0b">
+          <div class="card-title">RG-58 (Thin Coax)</div>
+          <p style="font-size:0.8rem;color:#94a3b8;margin-top:0.3rem;line-height:1.6">Used in legacy 10Base2 Ethernet ("Thinnet"). Max segment 185m. Rarely used today.</p>
+        </div>
+        <div class="card" style="border-left:3px solid #ef4444">
+          <div class="card-title">RG-8 (Thick Coax)</div>
+          <p style="font-size:0.8rem;color:#94a3b8;margin-top:0.3rem;line-height:1.6">Used in legacy 10Base5 Ethernet ("Thicknet"). Max segment 500m. Now obsolete in networking.</p>
+        </div>
+        <div class="card" style="border-left:3px solid #00d4ff">
+          <div class="card-title">RG-6 / RG-59 (Modern)</div>
+          <p style="font-size:0.8rem;color:#94a3b8;margin-top:0.3rem;line-height:1.6">Used for cable TV (CATV), cable modem broadband (DOCSIS standard), and satellite connections.</p>
+        </div>
+      </div>
+    </div>
+    <div class="callout warn"><strong>Legacy Alert:</strong> Coaxial Ethernet (Bus Topology) has a critical single point of failure — one break anywhere in the cable brings down the entire network segment. This is why star topology with twisted pair replaced it.</div>
+  </div>
+
+  <!-- W5: Fiber -->
+  <div class="section-page" id="w5-fiber">
+    <div class="section-badge" style="background:rgba(239,68,68,0.1);color:#ef4444;border-color:rgba(239,68,68,0.2)">Week 5 — Light Transmission</div>
+    <h2 class="section-title">Fiber-Optic Cable</h2>
+    <p class="section-subtitle">Uses light pulses in glass/plastic fibers. Immune to EMI, capable of 100+ Gbps over long distances. Hover over the cross-section to explore the layers.</p>
+    <div style="display:grid;grid-template-columns:240px 1fr;gap:2rem;align-items:center;margin-bottom:1.5rem">
+      <!-- Fiber cross-section -->
+      <div style="display:flex;align-items:center;justify-content:center;height:240px;position:relative;cursor:crosshair"
+        onmouseleave="resetFiber()">
+        <div id="fsheath" class="fiber-ring" style="width:220px;height:220px;background:#374151;border:2px solid #4b5563"
+          onmouseenter="hoverFiber('sheath')">
+          <div id="fkevlar" class="fiber-ring" style="width:174px;height:174px;background:#92400e;border:2px solid #b45309"
+            onmouseenter="hoverFiber('kevlar')">
+            <div id="fbuffer" class="fiber-ring" style="width:128px;height:128px;background:#1d4ed8;border:2px solid #2563eb"
+              onmouseenter="hoverFiber('buffer')">
+              <div id="fcladding" class="fiber-ring" style="width:82px;height:82px;background:#94a3b8;border:2px solid #cbd5e1"
+                onmouseenter="hoverFiber('cladding')">
+                <div id="fcore" class="fiber-ring" style="width:28px;height:28px;background:#00d4ff;box-shadow:0 0 12px #00d4ff,0 0 4px white;border:none"
+                  onmouseenter="hoverFiber('core')"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="fiberInfo" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1.5rem;min-height:180px;display:flex;flex-direction:column;justify-content:center">
+        <div style="color:#475569;text-align:center">
+          <div style="font-size:2rem;margin-bottom:0.5rem">🔍</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1rem">Hover the cross-section</div>
+          <div style="font-size:0.82rem;margin-top:0.3rem">to explore each layer</div>
+        </div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card" style="position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;right:0;background:#10b981;color:white;font-size:0.65rem;font-family:'JetBrains Mono',monospace;padding:0.2rem 0.5rem;border-radius:0 0 0 4px">Long Distance</div>
+        <div class="card-title">SMF — Single Mode Fiber</div>
+        <ul style="font-size:0.82rem;color:#94a3b8;line-height:1.8;padding-left:1.2rem;margin-top:0.75rem">
+          <li>Very narrow core (8–10 microns)</li>
+          <li>Uses a <strong style="color:#e2e8f0">Laser</strong> light source</li>
+          <li>Minimal signal loss — travels many miles</li>
+          <li>Used for Internet backbone and WAN links</li>
+        </ul>
+      </div>
+      <div class="card" style="position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;right:0;background:#f59e0b;color:white;font-size:0.65rem;font-family:'JetBrains Mono',monospace;padding:0.2rem 0.5rem;border-radius:0 0 0 4px">Short Distance</div>
+        <div class="card-title">MMF — Multimode Fiber</div>
+        <ul style="font-size:0.82rem;color:#94a3b8;line-height:1.8;padding-left:1.2rem;margin-top:0.75rem">
+          <li>Larger core (50–62.5 microns)</li>
+          <li>Uses <strong style="color:#e2e8f0">LED or Laser</strong> — light bounces off walls</li>
+          <li>More attenuation limits distance</li>
+          <li>Used for LAN backbone, server-to-switch links</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ WEEK 6 ============================================================ -->
+<div class="week-page" id="page-w6">
+  <!-- W6: Signals -->
+  <div class="section-page active" id="w6-signals">
+    <div class="section-badge" style="background:rgba(236,72,153,0.1);color:#ec4899;border-color:rgba(236,72,153,0.2)">Week 6 — RF Fundamentals</div>
+    <h2 class="section-title">Wireless Signals &amp; Spectrum</h2>
+    <p class="section-subtitle">WLANs transmit data via Radio Frequency (RF) waves. They use the same Layer 3+ protocols as wired networks, but the open-air medium introduces unique challenges.</p>
+    <div class="grid-2" style="margin-bottom:1.5rem">
+      <div class="card">
+        <div class="card-title">Frequency Bands</div>
+        <div style="display:flex;flex-direction:column;gap:0.75rem;margin-top:0.75rem">
+          <div style="background:#0a0e1a;border:1px solid #1e2d45;padding:0.75rem;border-radius:6px">
+            <div style="font-weight:700;color:#94a3b8;display:flex;justify-content:space-between"><span>2.4 GHz Band</span><span style="font-size:0.72rem;background:#1a2235;padding:0.1rem 0.4rem;border-radius:2px">Older</span></div>
+            <div style="font-size:0.78rem;color:#64748b;margin-top:0.3rem">Range: 2.4 to 2.4835 GHz — 11 unlicensed channels</div>
+            <div class="callout warn" style="margin-top:0.5rem;padding:0.4rem 0.75rem"><strong>Congested:</strong> Shared with microwaves, baby monitors, Bluetooth</div>
+          </div>
+          <div style="background:rgba(236,72,153,0.05);border:1px solid rgba(236,72,153,0.2);padding:0.75rem;border-radius:6px">
+            <div style="font-weight:700;color:#ec4899;display:flex;justify-content:space-between"><span>5 GHz Band</span><span style="font-size:0.72rem;background:rgba(236,72,153,0.1);color:#ec4899;padding:0.1rem 0.4rem;border-radius:2px">Newer</span></div>
+            <div style="font-size:0.78rem;color:#f9a8d4;margin-top:0.3rem">24 unlicensed bands, each 20 MHz wide — far less congestion</div>
+          </div>
+        </div>
+        <div style="margin-top:0.75rem;font-size:0.75rem;color:#475569">Regulated by <strong style="color:#94a3b8">FCC</strong> (USA) and <strong style="color:#94a3b8">ITU</strong> (International). Spectrum runs 9 KHz → 300 GHz.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:1rem">Antenna Types <span class="new-tag">Added</span></div>
+        <div style="display:flex;flex-direction:column;gap:0.75rem">
+          <div style="background:#0a0e1a;border:1px solid #1e2d45;border-left:3px solid #ec4899;padding:0.75rem;border-radius:0 6px 6px 0">
+            <div style="font-weight:700;color:#ec4899;font-size:0.85rem">Omnidirectional Antenna</div>
+            <p style="font-size:0.78rem;color:#94a3b8;margin-top:0.3rem">Broadcasts signal in <strong>all directions equally</strong> (360°). Used in home Wi-Fi routers and WAPs for general coverage.</p>
+            <div style="display:flex;justify-content:center;margin-top:0.5rem">
+              <div style="width:60px;height:60px;border-radius:50%;border:2px dashed rgba(236,72,153,0.3);display:flex;align-items:center;justify-content:center;position:relative">
+                <div style="width:20px;height:20px;border-radius:50%;background:rgba(236,72,153,0.2);border:2px solid #ec4899"></div>
+                <div style="position:absolute;width:45px;height:45px;border-radius:50%;border:1px dashed rgba(236,72,153,0.2)"></div>
+              </div>
+            </div>
+          </div>
+          <div style="background:#0a0e1a;border:1px solid #1e2d45;border-left:3px solid #00d4ff;padding:0.75rem;border-radius:0 6px 6px 0">
+            <div style="font-weight:700;color:#00d4ff;font-size:0.85rem">Unidirectional (Directional) Antenna</div>
+            <p style="font-size:0.78rem;color:#94a3b8;margin-top:0.3rem">Focuses signal in <strong>one specific direction</strong>. Used for point-to-point links (building-to-building). Longer range, less interference.</p>
+            <div style="display:flex;justify-content:center;margin-top:0.5rem">
+              <div style="width:60px;height:60px;display:flex;align-items:center;justify-content:center;position:relative">
+                <div style="width:12px;height:12px;border-radius:50%;background:rgba(0,212,255,0.2);border:2px solid #00d4ff"></div>
+                <div style="position:absolute;right:0;width:46px;height:22px;background:rgba(0,212,255,0.05);border-radius:0 20px 20px 0;border:1px dashed rgba(0,212,255,0.3)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <h3 style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:1rem">Signal Propagation Behaviors</h3>
+    <div class="card" style="margin-bottom:1rem">
+      <div style="display:flex;gap:0.5rem;margin-bottom:1rem">
+        <button class="prop-btn active" id="pb-reflection" onclick="showProp('reflection')">Reflection</button>
+        <button class="prop-btn" id="pb-diffraction" onclick="showProp('diffraction')">Diffraction</button>
+        <button class="prop-btn" id="pb-scattering" onclick="showProp('scattering')">Scattering</button>
+      </div>
+      <div style="display:grid;grid-template-columns:160px 1fr;gap:1.5rem;align-items:center">
+        <div id="propVisual" style="background:#0a0e1a;border:1px solid #1e2d45;border-radius:6px;height:120px;display:flex;align-items:center;justify-content:center;font-size:2rem;overflow:hidden;padding:0.5rem">
+          <div style="text-align:center">
+            <div style="color:#00d4ff;font-size:1.2rem">➤➤</div>
+            <div style="width:4px;height:60px;background:#475569;margin:0 auto"></div>
+            <div style="color:#00d4ff;font-size:1.2rem;transform:rotate(180deg)">➤➤</div>
+          </div>
+        </div>
+        <div id="propText">
+          <div style="font-weight:700;font-size:1rem;color:#e2e8f0;margin-bottom:0.5rem">Reflection</div>
+          <p style="font-size:0.82rem;color:#94a3b8;line-height:1.6">Signal bounces back toward its source when hitting a dense, smooth surface (metal walls, elevator doors, windows).</p>
+        </div>
+      </div>
+    </div>
+    <div class="callout warn"><strong>Multipath Signals:</strong> Reflection/diffraction/scattering cause the same signal to arrive via multiple paths at slightly different times — causing data errors and degraded performance.</div>
+  </div>
+
+  <!-- W6: Architecture -->
+  <div class="section-page" id="w6-arch">
+    <div class="section-badge" style="background:rgba(236,72,153,0.1);color:#ec4899;border-color:rgba(236,72,153,0.2)">Week 6 — Network Topologies</div>
+    <h2 class="section-title">WLAN Architecture &amp; WPAN</h2>
+    <p class="section-subtitle">Wireless devices can be organized into different architectures depending on scale and requirements.</p>
+    <h3 style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:1rem">WLAN Layouts</h3>
+    <div class="grid-3" style="margin-bottom:2rem">
+      <div class="card" style="text-align:center">
+        <div style="font-size:2rem;margin-bottom:0.5rem">💻⇌💻</div>
+        <div class="card-title">Ad Hoc</div>
+        <p style="font-size:0.8rem;color:#94a3b8;margin-top:0.3rem">Devices communicate peer-to-peer directly. No WAP required. Temporary and simple.</p>
+      </div>
+      <div class="card" style="text-align:center;border-top:2px solid #ec4899">
+        <div style="font-size:2rem;margin-bottom:0.5rem">💻📡💻</div>
+        <div class="card-title" style="color:#ec4899">Infrastructure</div>
+        <p style="font-size:0.8rem;color:#94a3b8;margin-top:0.3rem">All devices communicate through a centralized Wireless Access Point (WAP). Most common setup.</p>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="font-size:2rem;margin-bottom:0.5rem">📡⇌📡</div>
+        <div class="card-title">Mesh</div>
+        <p style="font-size:0.8rem;color:#94a3b8;margin-top:0.3rem">Interconnected WAPs with overlapping coverage. Highly fault-tolerant — no single point of failure.</p>
+      </div>
+    </div>
+    <div class="callout" style="margin-bottom:1.5rem"><strong>BSS</strong> (Basic Service Set) = single WAP. <strong>ESS</strong> (Extended Service Set) = multiple WAPs sharing the same SSID, enabling seamless <strong>roaming</strong> between access points.</div>
+    <h3 style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:1rem">Wireless PAN (Personal Area Network)</h3>
+    <div class="grid-2">
+      <div class="card" style="border-left:3px solid #7c3aed">
+        <div class="card-title">Bluetooth</div>
+        <ul style="font-size:0.82rem;color:#94a3b8;line-height:1.8;padding-left:1.2rem;margin-top:0.5rem">
+          <li>Operates in <strong style="color:#e2e8f0">2.4 GHz</strong> band</li>
+          <li>Uses <strong style="color:#e2e8f0">Frequency Hopping</strong> to reduce interference</li>
+          <li>Devices must be <strong style="color:#e2e8f0">paired</strong> before connecting</li>
+        </ul>
+        <div style="margin-top:0.75rem;background:#0a0e1a;border:1px solid #1e2d45;border-radius:4px;padding:0.75rem">
+          <div style="font-size:0.75rem;font-weight:600;color:#f59e0b;margin-bottom:0.35rem">Security Risks:</div>
+          <div style="font-size:0.78rem;color:#94a3b8"><strong style="color:#e2e8f0">Bluejacking</strong> — sending unsolicited messages<br><strong style="color:#e2e8f0">Bluesnarfing</strong> — downloading data without permission</div>
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid #10b981">
+        <div class="card-title">NFC — Near-Field Communication</div>
+        <ul style="font-size:0.82rem;color:#94a3b8;line-height:1.8;padding-left:1.2rem;margin-top:0.5rem">
+          <li>Extremely short range (centimeters)</li>
+          <li><strong style="color:#e2e8f0">Smart Tags</strong> harvest power from reader via magnetic induction — no battery needed</li>
+          <li>Used for contactless payments, access cards, device pairing</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- W6: Standards -->
+  <div class="section-page" id="w6-standards">
+    <div class="section-badge" style="background:rgba(236,72,153,0.1);color:#ec4899;border-color:rgba(236,72,153,0.2)">Week 6 — IEEE 802.11</div>
+    <h2 class="section-title">Wi-Fi Standards</h2>
+    <p class="section-subtitle">All 802.11 standards are <strong>half-duplex</strong> — a device can either transmit OR receive, never both simultaneously. Throughput has grown exponentially across generations.</p>
+    <div class="callout" style="margin-bottom:1.5rem"><strong>Half-Duplex:</strong> Because all devices share the air medium, only one can transmit at a time. This is why collision avoidance (CSMA/CA) is necessary and why real-world throughput is always well below the theoretical maximum.</div>
+    <div class="chart-wrap" style="margin-bottom:1.5rem">
+      <div style="text-align:center;font-size:0.82rem;color:#94a3b8;margin-bottom:1rem">Max Theoretical Throughput by Standard (Log Scale)</div>
+      <div class="chart-inner"><canvas id="w6StandardsChart"></canvas></div>
+    </div>
+    <div class="card" style="overflow:hidden;padding:0">
+      <table class="data-table">
+        <thead><tr><th>Standard</th><th>Frequency</th><th>Max Speed</th><th>Range</th><th>Key Feature</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pill">802.11b</span></td><td>2.4 GHz</td><td style="color:#94a3b8">11 Mbps</td><td>100m</td><td style="font-size:0.78rem;color:#64748b">First widely adopted. Legacy.</td></tr>
+          <tr><td><span class="pill">802.11a</span></td><td>5 GHz</td><td style="color:#94a3b8">54 Mbps</td><td>20m</td><td style="font-size:0.78rem;color:#64748b">Shorter range; higher frequency.</td></tr>
+          <tr><td><span class="pill">802.11g</span></td><td>2.4 GHz</td><td style="color:#94a3b8">54 Mbps</td><td>100m</td><td style="font-size:0.78rem;color:#64748b">Speed of 'a' + range of 'b'. Backward compatible.</td></tr>
+          <tr><td><span class="pill">802.11n</span></td><td>Dual (2.4/5)</td><td style="color:#ec4899">600 Mbps</td><td>400m</td><td style="font-size:0.78rem;color:#f9a8d4">Introduces <strong>MIMO</strong> (multiple antennas). Modified MAC frames.</td></tr>
+          <tr style="background:rgba(236,72,153,0.04)"><td><span class="pill">802.11ac</span></td><td>5 GHz</td><td style="color:#ec4899;font-weight:700">6.93 Gbps</td><td>Varies</td><td style="font-size:0.78rem;color:#f9a8d4">Gigabit Wi-Fi. Beamforming, wider channels, MU-MIMO.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- W6: Security -->
+  <div class="section-page" id="w6-security">
+    <div class="section-badge" style="background:rgba(236,72,153,0.1);color:#ec4899;border-color:rgba(236,72,153,0.2)">Week 6 — Access &amp; Protection</div>
+    <h2 class="section-title">Access Methods &amp; Security</h2>
+    <p class="section-subtitle">Wireless devices can't transmit and receive simultaneously — they use collision avoidance. The open-air medium also demands strong encryption.</p>
+    <div class="grid-2" style="margin-bottom:1.5rem">
+      <div class="card" style="background:#0a0e1a;border:1px solid #1e2d45">
+        <div class="card-title" style="color:#ec4899">CSMA/CA — Collision Avoidance</div>
+        <p style="font-size:0.8rem;color:#94a3b8;margin:0.5rem 0">Carrier Sense Multiple Access with Collision Avoidance:</p>
+        <ol style="font-size:0.82rem;color:#94a3b8;line-height:1.8;padding-left:1.2rem">
+          <li>Node listens to check if airways are clear</li>
+          <li>If clear, transmits data</li>
+          <li>Waits for an <strong style="color:#ec4899">ACK packet</strong> to confirm receipt</li>
+          <li>If no ACK, assumes collision — waits random time and retries</li>
+        </ol>
+        <div class="callout" style="margin-top:0.75rem"><strong>Overhead:</strong> The ACK requirement means real-world throughput is always well below theoretical maximum.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Association &amp; Scanning</div>
+        <div style="display:flex;flex-direction:column;gap:0.5rem;margin-top:0.75rem">
+          <div style="display:flex;gap:0.75rem;align-items:start;font-size:0.82rem">
+            <span style="background:rgba(0,212,255,0.1);color:#00d4ff;padding:0.1rem 0.5rem;border-radius:2px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;flex-shrink:0">Active</span>
+            <span style="color:#94a3b8">Device sends a <strong style="color:#e2e8f0">Probe</strong> frame broadcasting "Any networks here?"</span>
+          </div>
+          <div style="display:flex;gap:0.75rem;align-items:start;font-size:0.82rem">
+            <span style="background:rgba(124,58,237,0.1);color:#a78bfa;padding:0.1rem 0.5rem;border-radius:2px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;flex-shrink:0">Passive</span>
+            <span style="color:#94a3b8">Device listens for <strong style="color:#e2e8f0">Beacon frames</strong> periodically broadcast by the WAP containing the SSID</span>
+          </div>
+          <div style="font-size:0.82rem;color:#94a3b8;margin-top:0.3rem"><strong style="color:#e2e8f0">Roaming</strong> — Moving between WAPs while maintaining connection (ESS). Risk: <strong style="color:#ef4444">Rogue APs</strong> mimicking legitimate SSIDs to intercept traffic (Evil Twin attack).</div>
+        </div>
+      </div>
+    </div>
+    <div class="callout warn" style="margin-bottom:1.5rem"><strong>Default Security:</strong> 802.11 provides NO security by default. Only an SSID is required to connect. Explicit security measures are essential.</div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-title">Authentication</div>
+        <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.3rem;line-height:1.6">Matching client credentials against a database to verify identity before granting network access.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">MAC Filtering</div>
+        <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.3rem;line-height:1.6">WAP only authenticates devices with MAC addresses on an approved allowlist. Not foolproof — MACs can be spoofed.</p>
+      </div>
+      <div class="card" style="border-top:2px solid #ec4899">
+        <div class="card-title" style="color:#ec4899">WPA2 Encryption</div>
+        <p style="font-size:0.82rem;color:#94a3b8;margin-top:0.3rem;line-height:1.6">Strong AES encryption standard. Replaces weaker WEP/WPA. <strong>Enterprise mode</strong> adds a RADIUS server for individual user authentication (username + password per user).</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+</body>
+</html>
+<script>
+// ============================================================
+// NAVIGATION & SIDEBAR SYSTEM
+// ============================================================
+
+const weekSections = {
+  w1: [
+    { id: 'services', label: '1. Network Services' },
+    { id: 'access', label: '2. Access Models' },
+    { id: 'osi', label: '3. OSI Model' },
+    { id: 'hardware', label: '4. Hardware & Scopes' },
+  ],
+  w2: [
+    { id: 'overview', label: '1. Layer Overview' },
+    { id: 'mac', label: '2. MAC Addresses' },
+    { id: 'dns', label: '3. DNS' },
+    { id: 'dhcp', label: '4. DHCP & Subnets ✦' },
+    { id: 'ports', label: '5. Ports & Sockets' },
+    { id: 'ipv4', label: '6. IPv4 Addressing' },
+    { id: 'nat', label: '7. NAT & PAT' },
+    { id: 'ipv6', label: '8. IPv6 Addressing' },
+  ],
+  w3: [
+    { id: 'encap', label: '1. Data Encapsulation' },
+    { id: 'transport', label: '2. TCP vs UDP' },
+    { id: 'protocols', label: '3. Network Protocols' },
+    { id: 'routing', label: '4. Routing Tables' },
+    { id: 'protocols2', label: '5. Routing Protocols' },
+  ],
+  w4: [
+    { id: 'cabling', label: '1. Structured Cabling' },
+    { id: 'racks', label: '2. Cable Mgmt & Racks' },
+    { id: 'storage', label: '3. Network Storage' },
+    { id: 'power', label: '4. Power Management' },
+    { id: 'nics', label: '5. NICs & Ethernet' },
+  ],
+  w5: [
+    { id: 'signals', label: '1. Analog vs Digital' },
+    { id: 'mux', label: '2. Multiplexing' },
+    { id: 'copper', label: '3. Copper Cabling' },
+    { id: 'coax', label: '4. Coaxial Cable ✦' },
+    { id: 'fiber', label: '5. Fiber Optics' },
+  ],
+  w6: [
+    { id: 'signals', label: '1. Signals & Spectrum' },
+    { id: 'arch', label: '2. WLAN Architecture' },
+    { id: 'standards', label: '3. 802.11 Standards' },
+    { id: 'security', label: '4. Access & Security' },
+  ],
+};
+
+const weekColors = {
+  w1: '#00d4ff', w2: '#7c3aed', w3: '#10b981',
+  w4: '#f59e0b', w5: '#ef4444', w6: '#ec4899'
+};
+
+let currentWeek = 'home';
+let currentSection = null;
+const chartsInited = {};
+
+function buildSidebar(weekId) {
+  const sidebar = document.getElementById('sidebar');
+  const sections = weekSections[weekId];
+  if (!sections) { sidebar.innerHTML = ''; return; }
+  const color = weekColors[weekId];
+
+  // Resources panel at top of sidebar
+  let html = `
+    <div class="sidebar-label" style="color:${color}">Resources</div>
+    <button class="sidebar-pdf-btn" style="border-color:${color}40;color:${color}" onclick="openPDF('${weekId}')">
+      📄 Week Notes PDF
+    </button>
+    <div class="sidebar-label" style="margin-top:0.75rem">Sections</div>
+  `;
+  sections.forEach(s => {
+    const id = `${weekId}-${s.id}`;
+    html += `<button class="sidebar-item" style="--tab-color:${color}" id="nav-${id}" onclick="showSection('${weekId}','${s.id}')">${s.label}</button>`;
+  });
+  sidebar.innerHTML = html;
+}
+
+function showWeek(weekId) {
+  // Update top nav
+  document.querySelectorAll('.week-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`[data-week="${weekId}"]`).classList.add('active');
+
+  // Show correct page
+  document.querySelectorAll('.week-page').forEach(p => p.classList.remove('active'));
+  document.getElementById(`page-${weekId}`)?.classList.add('active');
+
+  currentWeek = weekId;
+
+  if (weekId === 'home') {
+    document.getElementById('sidebar').innerHTML = '';
+    hideAudioBar();
+    return;
+  }
+
+  buildSidebar(weekId);
+
+  // Show first section
+  const sections = weekSections[weekId];
+  if (sections && sections.length > 0) {
+    showSection(weekId, sections[0].id);
+  }
+
+  // Update audio bar for this week
+  switchAudioWeek(weekId);
+}
+
+function showSection(weekId, sectionId) {
+  // Hide all sections in this week
+  const allSections = document.querySelectorAll(`#page-${weekId} .section-page`);
+  allSections.forEach(s => s.classList.remove('active'));
+
+  // Show target
+  const target = document.getElementById(`${weekId}-${sectionId}`);
+  if (target) {
+    target.classList.add('active');
+    document.getElementById('main-content').scrollTop = 0;
+  }
+
+  // Update sidebar active state
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  const navItem = document.getElementById(`nav-${weekId}-${sectionId}`);
+  if (navItem) navItem.classList.add('active');
+
+  currentSection = sectionId;
+
+  // Init charts on demand
+  initChartsFor(weekId, sectionId);
+}
+
+// ============================================================
+// CHART INITIALIZATION
+// ============================================================
+
+function initChartsFor(weekId, sectionId) {
+  const key = `${weekId}-${sectionId}`;
+  if (chartsInited[key]) return;
+  chartsInited[key] = true;
+
+  if (weekId === 'w1' && sectionId === 'access') initW1AccessChart();
+  if (weekId === 'w2' && sectionId === 'ipv4') initW2IPv4Chart();
+  if (weekId === 'w2' && sectionId === 'ipv6') initW2IPv6Chart();
+  if (weekId === 'w3' && sectionId === 'protocols2') initW3RoutingChart();
+  if (weekId === 'w4' && sectionId === 'storage') initW4StorageChart();
+  if (weekId === 'w4' && sectionId === 'power') initW4PowerChart();
+  if (weekId === 'w5' && sectionId === 'signals') initW5SignalChart();
+  if (weekId === 'w6' && sectionId === 'standards') initW6StandardsChart();
+}
+
+const chartDefaults = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: { legend: { labels: { color: '#94a3b8', font: { family: 'Inter' } } } }
+};
+
+const darkScales = {
+  r: {
+    angleLines: { color: 'rgba(255,255,255,0.06)' },
+    grid: { color: 'rgba(255,255,255,0.06)' },
+    pointLabels: { color: '#94a3b8', font: { size: 11 } },
+    ticks: { display: false, min: 0, max: 10 }
+  }
+};
+
+function initW1AccessChart() {
+  new Chart(document.getElementById('w1AccessChart'), {
+    type: 'radar',
+    data: {
+      labels: ['Scalability','Security','Centralization','Cost Efficiency','Setup Simplicity'],
+      datasets: [
+        { label: 'Peer-to-Peer', data: [2,2,1,9,9], borderColor:'#f59e0b', backgroundColor:'rgba(245,158,11,0.1)', pointBackgroundColor:'#f59e0b', borderWidth:2 },
+        { label: 'Client-Server', data: [10,9,10,3,3], borderColor:'#00d4ff', backgroundColor:'rgba(0,212,255,0.1)', pointBackgroundColor:'#00d4ff', borderWidth:2 }
+      ]
+    },
+    options: { ...chartDefaults, scales: darkScales }
+  });
+}
+
+function initW2IPv4Chart() {
+  new Chart(document.getElementById('w2IPv4Chart'), {
+    type: 'bar',
+    data: {
+      labels: ['Class A', 'Class B', 'Class C'],
+      datasets: [{
+        label: 'Max Hosts',
+        data: [16777214, 65534, 254],
+        backgroundColor: ['rgba(0,212,255,0.7)','rgba(124,58,237,0.7)','rgba(16,185,129,0.7)'],
+        borderColor: ['#00d4ff','#7c3aed','#10b981'],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      ...chartDefaults,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.parsed.y.toLocaleString() + ' hosts' } } },
+      scales: {
+        y: { type:'logarithmic', ticks: { color:'#64748b' }, grid: { color:'rgba(255,255,255,0.05)' }, title: { display:true, text:'Hosts (Log Scale)', color:'#64748b' } },
+        x: { ticks: { color:'#64748b' }, grid: { display:false } }
+      }
+    }
+  });
+}
+
+function initW2IPv6Chart() {
+  new Chart(document.getElementById('w2IPv6Chart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['IPv4 bits (32)', 'IPv6 extra bits (96)'],
+      datasets: [{
+        data: [32, 96],
+        backgroundColor: ['rgba(148,163,184,0.6)','rgba(0,212,255,0.7)'],
+        borderWidth: 0
+      }]
+    },
+    options: { ...chartDefaults, cutout: '65%' }
+  });
+}
+
+function initW3RoutingChart() {
+  new Chart(document.getElementById('w3RoutingChart'), {
+    type: 'radar',
+    data: {
+      labels: ['Convergence Speed','Low Overhead','Scalability','Complexity'],
+      datasets: [
+        { label:'RIP', data:[2,8,2,2], borderColor:'#94a3b8', backgroundColor:'rgba(148,163,184,0.1)', pointBackgroundColor:'#94a3b8', borderWidth:2 },
+        { label:'OSPF', data:[8,4,8,6], borderColor:'#10b981', backgroundColor:'rgba(16,185,129,0.1)', pointBackgroundColor:'#10b981', borderWidth:2 },
+        { label:'BGP', data:[5,2,10,10], borderColor:'#00d4ff', backgroundColor:'rgba(0,212,255,0.1)', pointBackgroundColor:'#00d4ff', borderWidth:2 }
+      ]
+    },
+    options: { ...chartDefaults, scales: darkScales }
+  });
+}
+
+function initW4StorageChart() {
+  new Chart(document.getElementById('w4StorageChart'), {
+    type: 'radar',
+    data: {
+      labels: ['Performance','Scalability','Fault Tolerance','Setup Simplicity'],
+      datasets: [
+        { label:'NAS', data:[5,5,6,9], borderColor:'#00d4ff', backgroundColor:'rgba(0,212,255,0.1)', pointBackgroundColor:'#00d4ff', borderWidth:2 },
+        { label:'SAN', data:[10,10,10,2], borderColor:'#10b981', backgroundColor:'rgba(16,185,129,0.1)', pointBackgroundColor:'#10b981', borderWidth:2 }
+      ]
+    },
+    options: { ...chartDefaults, scales: darkScales }
+  });
+}
+
+function initW4PowerChart() {
+  const labels = ['t0','t1','Surge','t3','Noise','t5','t6','Brownout','t8','Blackout','t10'];
+  new Chart(document.getElementById('w4PowerChart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Wall Power (V)',
+          data: [120,120,165,120,110,135,120,85,120,0,0],
+          borderColor:'#ef4444', backgroundColor:'rgba(239,68,68,0.08)',
+          borderWidth:2.5, pointRadius:3, tension:0.15, fill:true
+        },
+        {
+          label: 'Online UPS Output (V)',
+          data: [120,120,120,120,120,120,120,120,120,120,120],
+          borderColor:'#00d4ff', borderDash:[6,4],
+          borderWidth:2.5, pointRadius:0, fill:false
+        }
+      ]
+    },
+    options: {
+      ...chartDefaults,
+      scales: {
+        y: { min:0, max:180, ticks:{ color:'#64748b' }, grid:{ color:'rgba(255,255,255,0.05)' }, title:{ display:true, text:'Voltage', color:'#64748b' } },
+        x: { ticks:{ color:'#64748b' }, grid:{ display:false } }
+      }
+    }
+  });
+}
+
+let signalChart = null;
+function initW5SignalChart() {
+  const pts = Array.from({length:100},(_,i)=>i);
+  const analogData = pts.map(i => Math.sin(i*0.15)*4.5);
+  const digitalData = pts.map(i => Math.sin(i*0.15) >= 0 ? 4.5 : 0);
+
+  signalChart = new Chart(document.getElementById('w5SignalChart'), {
+    type: 'line',
+    data: {
+      labels: pts,
+      datasets: [{
+        label: 'Analog Signal',
+        data: analogData,
+        borderColor:'#ef4444', backgroundColor:'rgba(239,68,68,0.08)',
+        borderWidth:2.5, pointRadius:0, tension:0.4, fill:true
+      }]
+    },
+    options: {
+      ...chartDefaults,
+      animation: { duration:600, easing:'easeOutQuart' },
+      scales: {
+        y: { min:-6, max:6, ticks:{ color:'#64748b' }, grid:{ color:'rgba(255,255,255,0.05)' }, title:{ display:true, text:'Voltage', color:'#64748b' } },
+        x: { display:false }
+      }
+    }
+  });
+  signalChart._analog = analogData;
+  signalChart._digital = digitalData;
+}
+
+function setSignal(type) {
+  if (!signalChart) return;
+  const isAnalog = type === 'analog';
+  document.getElementById('sig-analog-btn').className = 'btn' + (isAnalog ? ' active-btn' : '');
+  document.getElementById('sig-digital-btn').className = 'btn' + (!isAnalog ? ' active-btn' : '');
+  document.getElementById('analog-info').style.opacity = isAnalog ? '1' : '0.4';
+  document.getElementById('digital-info').style.opacity = isAnalog ? '0.4' : '1';
+  signalChart.data.datasets[0].data = isAnalog ? signalChart._analog : signalChart._digital;
+  signalChart.data.datasets[0].label = isAnalog ? 'Analog Signal' : 'Digital Signal';
+  signalChart.data.datasets[0].borderColor = isAnalog ? '#ef4444' : '#f59e0b';
+  signalChart.data.datasets[0].backgroundColor = isAnalog ? 'rgba(239,68,68,0.08)' : 'rgba(245,158,11,0.08)';
+  signalChart.data.datasets[0].tension = isAnalog ? 0.4 : 0;
+  signalChart.update();
+}
+
+function initW6StandardsChart() {
+  new Chart(document.getElementById('w6StandardsChart'), {
+    type: 'bar',
+    data: {
+      labels: ['802.11b (2.4GHz)','802.11a (5GHz)','802.11g (2.4GHz)','802.11n (Dual)','802.11ac (5GHz)'],
+      datasets: [{
+        label: 'Max Throughput (Mbps)',
+        data: [11, 54, 54, 600, 6930],
+        backgroundColor: ['rgba(100,116,139,0.6)','rgba(100,116,139,0.6)','rgba(100,116,139,0.6)','rgba(236,72,153,0.6)','rgba(236,72,153,0.9)'],
+        borderColor: ['#64748b','#64748b','#64748b','#ec4899','#ec4899'],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      ...chartDefaults,
+      plugins: { legend: { display:false }, tooltip: { callbacks: { label: c => c.parsed.y.toLocaleString() + ' Mbps' } } },
+      scales: {
+        y: { type:'logarithmic', ticks: { color:'#64748b', callback: v => v >= 10 ? v.toLocaleString() : '' }, grid:{ color:'rgba(255,255,255,0.05)' }, title:{ display:true, text:'Mbps (Log Scale)', color:'#64748b' } },
+        x: { ticks: { color:'#64748b' }, grid: { display:false } }
+      }
+    }
+  });
+}
+
+// ============================================================
+// OSI MODEL INTERACTIVE
+// ============================================================
+
+const osiData = {
+  7: { title:'Layer 7: Application', pdu:'Payload / Data', desc:'Interfaces directly with network applications (web browsers, email clients) and utilities like SNMP. This is where users interact with the network.', icon:'💻' },
+  6: { title:'Layer 6: Presentation', pdu:'Payload', desc:'Reformats, compresses, or encrypts data into a format the receiving application can read. Handles data translation and encryption (SSL/TLS).', icon:'🔒' },
+  5: { title:'Layer 5: Session', pdu:'Payload', desc:'Synchronizes data between applications and recovers dropped connections. Uses API calls to manage communication sessions between hosts.', icon:'🤝' },
+  4: { title:'Layer 4: Transport', pdu:'Segment (TCP) / Datagram (UDP)', desc:'Transports payloads. Identifies specific applications using Port Numbers. Uses TCP (reliable, connection-oriented) or UDP (fast, connectionless).', icon:'🚛' },
+  3: { title:'Layer 3: Network', pdu:'Packet', desc:'Moves messages from node to node across different networks. Uses IP Addresses and routing protocols to find the best path. Hardware: Router.', icon:'📡' },
+  2: { title:'Layer 2: Data Link', pdu:'Frame', desc:'Interfaces with physical hardware. Uses MAC Addresses to find nodes on the local network. Adds header + trailer. Hardware: Switch, NIC.', icon:'🔀' },
+  1: { title:'Layer 1: Physical', pdu:'Bits', desc:'Handles sending raw 0s and 1s via wired or wireless transmission — voltage on copper, light pulses in fiber, or RF waves in wireless.', icon:'🔌' }
+};
+
+const osiColors = { 7:'#ef4444',6:'#f97316',5:'#eab308',4:'#22c55e',3:'#0ea5e9',2:'#3b82f6',1:'#8b5cf6' };
+
+function showOSI(layerId, el) {
+  document.querySelectorAll('.osi-stack-item').forEach(i => i.classList.remove('selected'));
+  el.classList.add('selected');
+  const d = osiData[layerId];
+  const c = osiColors[layerId];
+  document.getElementById('osi-detail').innerHTML = `
+    <div style="text-align:center;padding:1rem">
+      <div style="font-size:2.5rem;margin-bottom:0.75rem">${d.icon}</div>
+      <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;color:${c};margin-bottom:0.5rem">${d.title}</h3>
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);display:inline-block;padding:0.2rem 0.75rem;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#94a3b8;margin-bottom:0.75rem">PDU: ${d.pdu}</div>
+      <p style="font-size:0.82rem;color:#94a3b8;line-height:1.7">${d.desc}</p>
+    </div>`;
+}
+
+// ============================================================
+// ENCAPSULATION INTERACTIVE
+// ============================================================
+
+let encapStep = 0;
+const encapLayers = ['frame','packet','segment','payload'];
+const encapBtnClasses = ['encap-btn-1','encap-btn-2','encap-btn-3','encap-btn-4'];
+
+function stepEncap(step) {
+  document.getElementById('encap-placeholder').style.display = 'none';
+  const layerMap = { 1:'encap-payload', 2:'encap-segment', 3:'encap-packet', 4:'encap-frame' };
+  const layer = document.getElementById(layerMap[step]);
+  layer.style.display = step === 4 ? 'block' : 'flex';
+  layer.style.display = step === 1 ? 'flex' : layer.style.display;
+  setTimeout(() => layer.classList.add('show'), 30);
+  
+  const btn = document.getElementById(`encap-btn-${step}`);
+  btn.className = 'btn done';
+  btn.disabled = true;
+  
+  if (step < 4) {
+    document.getElementById(`encap-btn-${step+1}`).disabled = false;
+  } else {
+    document.getElementById('encap-reset').style.display = 'block';
+  }
+  encapStep = step;
+}
+
+function resetEncap() {
+  ['encap-payload','encap-segment','encap-packet','encap-frame'].forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('show');
+    setTimeout(() => el.style.display = 'none', 300);
+  });
+  document.getElementById('encap-placeholder').style.display = 'block';
+  document.getElementById('encap-reset').style.display = 'none';
+  for (let i = 1; i <= 4; i++) {
+    const btn = document.getElementById(`encap-btn-${i}`);
+    btn.className = 'btn';
+    btn.disabled = i !== 1;
+    const labels = ['1. Create Payload (L7)','2. Add TCP Header (L4)','3. Add IP Header (L3)','4. Add Frame (L2)'];
+    btn.textContent = labels[i-1];
+  }
+  encapStep = 0;
+}
+
+// ============================================================
+// TCP HANDSHAKE INTERACTIVE
+// ============================================================
+
+let hsStep = 0;
+const hsMessages = ['', 'Client initiating connection...', 'Server acknowledges — synchronizing...', '✓ Connection established. Data transfer begins.'];
+
+function stepHandshake() {
+  hsStep++;
+  document.getElementById(`hs${hsStep}`).classList.add('show');
+  document.getElementById('hs-status').textContent = hsMessages[hsStep];
+  if (hsStep >= 3) {
+    document.getElementById('hs-btn').style.display = 'none';
+    document.getElementById('hs-reset').style.display = 'inline-block';
+  } else {
+    const labels = ['Start Handshake','→ Server Responds','→ Client Acknowledges'];
+    document.getElementById('hs-btn').textContent = labels[hsStep];
+  }
+}
+
+function resetHandshake() {
+  [1,2,3].forEach(i => document.getElementById(`hs${i}`).classList.remove('show'));
+  hsStep = 0;
+  document.getElementById('hs-status').textContent = '';
+  document.getElementById('hs-btn').textContent = 'Start Handshake';
+  document.getElementById('hs-btn').style.display = 'inline-block';
+  document.getElementById('hs-reset').style.display = 'none';
+}
+
+// ============================================================
+// SOCKET BUILDER
+// ============================================================
+
+function updateSocket() {
+  const ip = document.getElementById('socketIP').value;
+  const port = document.getElementById('socketPort').value;
+  document.getElementById('socketOutput').textContent = `${ip}:${port}`;
+}
+
+// ============================================================
+// FIBER OPTIC HOVER
+// ============================================================
+
+const fiberInfo = {
+  core: { title:'1. Core', desc:'The very center — ultra-thin glass or plastic fiber where light pulses actually travel. Diameter: 8–62.5 microns depending on type.' },
+  cladding: { title:'2. Cladding', desc:'Glass layer surrounding the core with a different refractive index. Acts as a mirror — reflects light back inward (Total Internal Reflection), allowing the cable to bend.' },
+  buffer: { title:'3. Buffer', desc:'Protective plastic coating directly around the cladding. Absorbs any escaping light and protects against physical damage.' },
+  kevlar: { title:'4. Kevlar Strands', desc:'High-strength polymer fibers (same material as bulletproof vests) that prevent the delicate glass core from snapping when the cable is pulled or stressed.' },
+  sheath: { title:'5. Outer Sheath', desc:'The outermost PVC or LSZH (Low Smoke Zero Halogen) jacket protecting the entire cable from environmental damage, moisture, and abrasion.' },
+};
+
+function hoverFiber(layer) {
+  const info = fiberInfo[layer];
+  document.getElementById('fiberInfo').innerHTML = `
+    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:#00d4ff;margin-bottom:0.75rem">${info.title}</div>
+    <p style="font-size:0.82rem;color:#94a3b8;line-height:1.7">${info.desc}</p>`;
+}
+
+function resetFiber() {
+  document.getElementById('fiberInfo').innerHTML = `
+    <div style="color:#475569;text-align:center">
+      <div style="font-size:2rem;margin-bottom:0.5rem">🔍</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1rem">Hover the cross-section</div>
+      <div style="font-size:0.82rem;margin-top:0.3rem">to explore each layer</div>
+    </div>`;
+}
+
+// ============================================================
+// SIGNAL PROPAGATION
+// ============================================================
+
+const propData = {
+  reflection: {
+    title: 'Reflection',
+    desc: 'Signal bounces back toward its source when hitting a dense, smooth surface (metal walls, elevator doors, windows). Creates a mirror-image path.',
+    visual: `<div style="text-align:center;padding:1rem">
+      <div style="color:#00d4ff;font-size:1.5rem;letter-spacing:-0.3rem">➤➤➤</div>
+      <div style="width:3px;height:50px;background:#475569;margin:0.25rem auto"></div>
+      <div style="color:#ec4899;font-size:1.5rem;letter-spacing:-0.3rem;transform:rotate(180deg)">➤➤➤</div>
+    </div>`
+  },
+  diffraction: {
+    title: 'Diffraction',
+    desc: 'Signal splits into secondary waves when it encounters a sharp edge or corner — like the edge of a building or a gap in a wall.',
+    visual: `<div style="position:relative;height:100px;display:flex;align-items:center;justify-content:center">
+      <div style="color:#00d4ff;position:absolute;left:0">➤</div>
+      <div style="width:3px;height:100%;background:#475569;position:absolute;left:50%"></div>
+      <div style="position:absolute;right:0;display:flex;flex-direction:column;gap:8px">
+        <div style="color:#10b981">↗</div>
+        <div style="color:#10b981">→</div>
+        <div style="color:#10b981">↘</div>
+      </div>
+    </div>`
+  },
+  scattering: {
+    title: 'Scattering',
+    desc: 'Signal diffuses in multiple unpredictable directions when hitting a rough, uneven surface — like leaves, trees, or textured walls.',
+    visual: `<div style="position:relative;height:100px;display:flex;align-items:center;justify-content:center">
+      <div style="color:#00d4ff;position:absolute;left:0;font-size:1.2rem">➤➤</div>
+      <div style="width:30px;height:30px;background:rgba(16,185,129,0.2);border:2px solid #10b981;border-radius:4px;transform:rotate(15deg)"></div>
+      <div style="position:absolute;right:0;display:flex;flex-direction:column;gap:4px">
+        <div style="color:#f59e0b;font-size:0.9rem">↗</div>
+        <div style="color:#f59e0b;font-size:0.9rem;margin-left:8px">→</div>
+        <div style="color:#f59e0b;font-size:0.9rem">↘</div>
+        <div style="color:#f59e0b;font-size:0.8rem">↪</div>
+      </div>
+    </div>`
+  }
+};
+
+function showProp(type) {
+  document.querySelectorAll('.prop-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`pb-${type}`).classList.add('active');
+  const d = propData[type];
+  document.getElementById('propVisual').innerHTML = d.visual;
+  document.getElementById('propText').innerHTML = `
+    <div style="font-weight:700;font-size:1rem;color:#e2e8f0;margin-bottom:0.5rem">${d.title}</div>
+    <p style="font-size:0.82rem;color:#94a3b8;line-height:1.6">${d.desc}</p>`;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+
+// Start on home
+document.addEventListener('DOMContentLoaded', () => {
+  // Init W1 access chart immediately since W1 is loaded by default via user click
+  setupDragDrop();
+});
+
+// ============================================================
+// AUDIO SYSTEM
+// ============================================================
+
+const audioState = {
+  audio: null,
+  playing: false,
+  currentWeek: null,
+  // Per-week stored audio blobs
+  files: {
+    'w1': { name: 'Week 1 Audio', url: './assets/W1 Ai Audio Overview.mp3' },
+    'w2': { name: 'Week 2 Audio', url: './assets/W2 Ai Audio Overview.mp3' },
+    'w3': { name: 'Week 3 Audio', url: './assets/W3 Ai Audio Overview.mp3' },
+    'w4': { name: 'Week 4 Audio', url: './assets/W4 Ai Audio Overview.mp3' },
+    'w5': { name: 'Week 5 Audio', url: './assets/W5 Ai Audio Overview.mp3' },
+    'w6': { name: 'Week 6 Audio', url: './assets/W6 Ai Audio Overview.mp3' }
+  }, // weekId -> { name, url }
+  animFrame: null,
+};
+
+const weekLabels = {
+  w1:'W1 — Intro', w2:'W2 — Addressing', w3:'W3 — Transport',
+  w4:'W4 — Infrastructure', w5:'W5 — Cabling', w6:'W6 — Wireless'
+};
+
+function switchAudioWeek(weekId) {
+  // Pause any playing audio
+  if (audioState.audio && audioState.playing) {
+    audioState.audio.pause();
+    audioState.playing = false;
+    document.getElementById('audio-play-btn').textContent = '▶';
+    if (audioState.animFrame) cancelAnimationFrame(audioState.animFrame);
+  }
+
+  audioState.currentWeek = weekId;
+  const color = weekColors[weekId] || '#00d4ff';
+  document.getElementById('audio-week-label').textContent = weekLabels[weekId] || weekId;
+  document.getElementById('audio-week-label').style.color = color;
+  document.getElementById('audio-play-btn').style.background = color;
+
+  const fileData = audioState.files[weekId];
+  if (fileData) {
+    // Load this week's audio
+    loadAudioURL(fileData.url, fileData.name, weekId);
+  } else {
+    // No audio loaded for this week
+    document.getElementById('audio-track-name').textContent = 'No audio — click Load MP3';
+    document.getElementById('audio-progress').value = 0;
+    document.getElementById('audio-time').textContent = '0:00 / 0:00';
+    clearWaveform();
+    if (audioState.audio) {
+      audioState.audio.pause();
+      audioState.audio = null;
+    }
+  }
+
+  showAudioBar();
+}
+
+function showAudioBar() {
+  document.getElementById('audio-bar').classList.add('visible');
+  document.body.classList.add('audio-visible');
+}
+
+function hideAudioBar() {
+  if (audioState.audio) {
+    audioState.audio.pause();
+    audioState.playing = false;
+  }
+  document.getElementById('audio-bar').classList.remove('visible');
+  document.body.classList.remove('audio-visible');
+}
+
+function loadAudioFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const weekId = audioState.currentWeek || currentWeek;
+  const url = URL.createObjectURL(file);
+  audioState.files[weekId] = { name: file.name, url };
+  loadAudioURL(url, file.name, weekId);
+  input.value = '';
+}
+
+function loadAudioURL(url, name, weekId) {
+  if (audioState.audio) {
+    audioState.audio.pause();
+    audioState.audio.src = '';
+  }
+  const audio = new Audio(url);
+  audio.volume = parseFloat(document.getElementById('audio-volume').value);
+  audioState.audio = audio;
+  audioState.playing = false;
+  document.getElementById('audio-play-btn').textContent = '▶';
+
+  const trackEl = document.getElementById('audio-track-name');
+  trackEl.textContent = name.replace(/\.[^/.]+$/, '').replace(/_/g, ' ');
+
+  audio.addEventListener('loadedmetadata', () => {
+    document.getElementById('audio-progress').max = audio.duration;
+    document.getElementById('audio-time').textContent = `0:00 / ${fmtTime(audio.duration)}`;
+    drawStaticWaveform(weekColors[weekId] || '#00d4ff');
+  });
+
+  audio.addEventListener('timeupdate', () => {
+    if (!audio.duration) return;
+    document.getElementById('audio-progress').value = audio.currentTime;
+    document.getElementById('audio-time').textContent =
+      `${fmtTime(audio.currentTime)} / ${fmtTime(audio.duration)}`;
+  });
+
+  audio.addEventListener('ended', () => {
+    audioState.playing = false;
+    document.getElementById('audio-play-btn').textContent = '▶';
+    if (audioState.animFrame) cancelAnimationFrame(audioState.animFrame);
+    clearWaveform();
+  });
+}
+
+function togglePlay() {
+  if (!audioState.audio) return;
+  if (audioState.playing) {
+    audioState.audio.pause();
+    audioState.playing = false;
+    document.getElementById('audio-play-btn').textContent = '▶';
+    if (audioState.animFrame) cancelAnimationFrame(audioState.animFrame);
+    drawStaticWaveform(weekColors[audioState.currentWeek] || '#00d4ff');
+  } else {
+    audioState.audio.play().catch(() => {});
+    audioState.playing = true;
+    document.getElementById('audio-play-btn').textContent = '⏸';
+    animateWaveform();
+  }
+}
+
+function seekAudio(val) {
+  if (audioState.audio) audioState.audio.currentTime = parseFloat(val);
+}
+
+function setVolume(val) {
+  if (audioState.audio) audioState.audio.volume = parseFloat(val);
+}
+
+function fmtTime(s) {
+  if (!isFinite(s)) return '0:00';
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60).toString().padStart(2,'0');
+  return `${m}:${sec}`;
+}
+
+// Waveform animation
+function animateWaveform() {
+  const canvas = document.getElementById('audio-waveform');
+  const ctx = canvas.getContext('2d');
+  const color = weekColors[audioState.currentWeek] || '#00d4ff';
+  const W = canvas.width, H = canvas.height;
+  const bars = 20;
+  let t = 0;
+
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    const bw = W / bars - 1;
+    for (let i = 0; i < bars; i++) {
+      const h = (Math.sin(t * 3 + i * 0.7) * 0.4 + 0.6) * H * 0.8;
+      const y = (H - h) / 2;
+      ctx.fillStyle = color;
+      ctx.globalAlpha = 0.75 + Math.sin(t + i) * 0.25;
+      ctx.fillRect(i * (bw + 1), y, bw, h);
+    }
+    ctx.globalAlpha = 1;
+    t += 0.07;
+    if (audioState.playing) {
+      audioState.animFrame = requestAnimationFrame(draw);
+    }
+  }
+  draw();
+}
+
+function drawStaticWaveform(color) {
+  const canvas = document.getElementById('audio-waveform');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
+  const bars = 20;
+  const bw = W / bars - 1;
+  for (let i = 0; i < bars; i++) {
+    const h = (Math.sin(i * 0.9) * 0.3 + 0.5) * H * 0.65;
+    const y = (H - h) / 2;
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.3;
+    ctx.fillRect(i * (bw + 1), y, bw, h);
+  }
+  ctx.globalAlpha = 1;
+}
+
+function clearWaveform() {
+  const canvas = document.getElementById('audio-waveform');
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+}
+
+// ============================================================
+// PDF SYSTEM
+// ============================================================
+
+const pdfState = {
+  currentWeek: null,
+  files: {
+    'w1': { name: 'Week 1 Notes', url: './assets/Ai Reconfigured W1 Notes.pdf' },
+    'w2': { name: 'Week 2 Notes', url: './assets/Ai Reconfigured W2 Notes.pdf' },
+    'w3': { name: 'Week 3 Notes', url: './assets/Ai Reconfigured W3 Notes.pdf' },
+    'w4': { name: 'Week 4 Notes', url: './assets/Ai Reconfigured W4 Notes.pdf' },
+    'w5': { name: 'Week 5 Notes', url: './assets/Ai Reconfigured W5 Notes.pdf' },
+    'w6': { name: 'Week 6 Notes', url: './assets/Ai Reconfigured W6 Notes.pdf' }
+  }, // weekId -> { name, url }
+  currentPage: 1,
+  totalPages: 1,
+  zoom: 100,
+};
+
+const weekFullNames = {
+  w1:'Week 1 — Intro', w2:'Week 2 — Addressing', w3:'Week 3 — Transport',
+  w4:'Week 4 — Infrastructure', w5:'Week 5 — Cabling', w6:'Week 6 — Wireless'
+};
+
+function openPDF(weekId) {
+  pdfState.currentWeek = weekId;
+  const color = weekColors[weekId] || '#00d4ff';
+
+  // Update badge
+  /*const badge = document.getElementById('pdf-week-badge');
+  badge.textContent = weekFullNames[weekId] || weekId;
+  badge.style.background = `${color}18`;
+  badge.style.color = color;
+  badge.style.borderColor = `${color}40`;
+
+  document.getElementById('pdf-drawer-title').textContent = 'Study Notes';*/
+
+  const fileData = pdfState.files[weekId];
+  if (fileData) {
+    showPDFViewer(fileData.url);
+  } else {
+    showPDFUpload();
+  }
+
+  document.getElementById('pdf-drawer').classList.add('open');
+  document.getElementById('pdf-overlay').classList.add('active');
+}
+
+function closePDF() {
+  document.getElementById('pdf-drawer').classList.remove('open');
+  document.getElementById('pdf-overlay').classList.remove('active');
+}
+
+function showPDFUpload() {
+  document.getElementById('pdf-upload-zone').style.display = 'flex';
+  document.getElementById('pdf-viewer-area').classList.remove('active');
+}
+
+function showPDFViewer(url) {
+  document.getElementById('pdf-upload-zone').style.display = 'none';
+  document.getElementById('pdf-viewer-area').classList.add('active');
+  const frame = document.getElementById('pdf-frame');
+  // Use browser built-in PDF viewer via iframe
+  frame.src = url + '#toolbar=1&navpanes=0&scrollbar=1';
+  updatePDFPageInfo();
+}
+
+function loadPDFFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const weekId = pdfState.currentWeek;
+  const url = URL.createObjectURL(file);
+  pdfState.files[weekId] = { name: file.name, url };
+  document.getElementById('pdf-drawer-title').textContent = file.name.replace(/\.[^/.]+$/, '');
+  showPDFViewer(url);
+  input.value = '';
+}
+
+function updatePDFPageInfo() {
+  document.getElementById('pdf-page-info').textContent = 'PDF Loaded';
+}
+
+// Toolbar controls - these work with the browser's built-in PDF viewer
+// For simple navigation we reload with page anchor
+/*function pdfPrev() {
+  pdfState.currentPage = Math.max(1, pdfState.currentPage - 1);
+  const fileData = pdfState.files[pdfState.currentWeek];
+  if (fileData) {
+    document.getElementById('pdf-frame').src = fileData.url + `#page=${pdfState.currentPage}`;
+    document.getElementById('pdf-page-info').textContent = `Page ${pdfState.currentPage}`;
+  }
+}
+
+function pdfNext() {
+  pdfState.currentPage++;
+  const fileData = pdfState.files[pdfState.currentWeek];
+  if (fileData) {
+    document.getElementById('pdf-frame').src = fileData.url + `#page=${pdfState.currentPage}`;
+    document.getElementById('pdf-page-info').textContent = `Page ${pdfState.currentPage}`;
+  }
+}*/
+
+function pdfZoomIn() {
+  pdfState.zoom = Math.min(200, pdfState.zoom + 25);
+  document.getElementById('pdf-frame').style.transform = `scale(${pdfState.zoom/100})`;
+  document.getElementById('pdf-frame').style.transformOrigin = 'top left';
+  document.getElementById('pdf-frame').style.width = `${10000/pdfState.zoom}%`;
+}
+
+function pdfZoomOut() {
+  pdfState.zoom = Math.max(50, pdfState.zoom - 25);
+  document.getElementById('pdf-frame').style.transform = `scale(${pdfState.zoom/100})`;
+  document.getElementById('pdf-frame').style.transformOrigin = 'top left';
+  document.getElementById('pdf-frame').style.width = `${10000/pdfState.zoom}%`;
+}
+
+function pdfFit() {
+  pdfState.zoom = 100;
+  document.getElementById('pdf-frame').style.transform = '';
+  document.getElementById('pdf-frame').style.width = '100%';
+}
+
+// Drag & drop on PDF zone
+function setupDragDrop() {
+  const zone = document.getElementById('pdf-drop-area');
+  if (!zone) return;
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type === 'application/pdf') {
+      const input = document.getElementById('pdf-file-input');
+      // Simulate file load
+      const url = URL.createObjectURL(file);
+      const weekId = pdfState.currentWeek;
+      pdfState.files[weekId] = { name: file.name, url };
+      document.getElementById('pdf-drawer-title').textContent = file.name.replace(/\.[^/.]+$/, '');
+      showPDFViewer(url);
+    }
+  });
+}
+
+let isPdfMaximized = false;
+
+function togglePDFSize() {
+  const drawer = document.getElementById('pdf-drawer');
+  const btn = document.getElementById('pdf-size-btn');
+  
+  isPdfMaximized = !isPdfMaximized;
+  
+  if (isPdfMaximized) {
+    drawer.classList.add('maximized');
+    btn.textContent = '🗕 Restore';
+  } else {
+    drawer.classList.remove('maximized');
+    btn.textContent = '⛶ Enlarge';
+  }
+}
+
+function closePDF() {
+  document.getElementById('pdf-drawer').classList.remove('open');
+  document.getElementById('pdf-overlay').classList.remove('active');
+  
+  // Reset size when closed
+  if (isPdfMaximized) togglePDFSize(); 
+}
+</script>
